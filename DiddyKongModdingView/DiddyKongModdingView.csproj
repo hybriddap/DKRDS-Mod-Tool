@@ -6,7 +6,18 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>DKRDSModTool</AssemblyName>
+    <ApplicationIcon>DKRDS_icon_Diddy.ico</ApplicationIcon>
+    <Description>An open source mod tool for Diddy Kong Racing DS.</Description>
+    <RepositoryUrl>https://github.com/hybriddap/DKRDS-Mod-Tool</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <Version>0.1.0</Version>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="DKRDS_icon_Diddy.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">

@@ -9,6 +9,42 @@ namespace DiddyKongModdingView
 {
     internal class Textures
     {
+        private static bool isTextureFile = false; //Used to determine if the texture is from a texture file or a track file
+        public static void populateTextures(byte[] assetData, ListBox listBox1, Label label1)
+        {
+            int textureCount = 0;
+            ushort assetCount = BitConverter.ToUInt16(assetData, 0);
+            for (int i = 0; i < assetCount; i++)
+            {
+                if (Assets.getAssetType(assetData, Assets.getAssetOffset(assetData, i)) == 0x0C)
+                {
+                    textureCount++;
+                    listBox1.Items.Add($"Asset {(i + 1).ToString()}");
+                }
+            }
+            label1.Text = $"Texture Files Found: {textureCount}";
+        }
+
+        public static void getAllTextures(byte[] trackData, ListBox listBox1, Label label1, String trackName)
+        {
+            if (trackData == null)
+            {
+                MessageBox.Show("Please select a track first!");
+                return;
+            }
+            
+            isTextureFile = trackName == "Texture"; 
+            
+            ushort textureCount = trackName == "Texture" ? BitConverter.ToUInt16(trackData, 0) : BitConverter.ToUInt16(trackData, Tracks.getTrackTextureGroupOffset(trackData));
+            for (int i = 0; i < textureCount; i++)
+            {
+                listBox1.Items.Add($"Texture {(i + 1).ToString()}");
+            }
+            label1.Text = $"Textures Found: {textureCount}";
+
+        }
+
+
         public static void showImage(byte[] trackData, int textureIndex, uint paletteUID)
         {
             //for texture
@@ -31,26 +67,49 @@ namespace DiddyKongModdingView
             viewer.Show();
         }
 
-        public static void populateTextures(byte[] trackData, ListBox listBox1, Label label1, String trackName)
+        public static Bitmap showPreview(byte[] trackData, int textureIndex, uint paletteUID)
         {
-            if (trackData == null)
-            {
-                MessageBox.Show("Please select a track first!");
-                return;
-            }
+            //for texture
+            int offset = getTextureOffset(trackData, textureIndex);
+            int width = BitConverter.ToInt16(trackData, offset + 16);
+            int height = BitConverter.ToInt16(trackData, offset + 18);
+            int size = BitConverter.ToInt16(trackData, offset + 14) * 0x10;
 
-            ushort textureCount = BitConverter.ToUInt16(trackData, Tracks.getTrackTextureGroupOffset(trackData));
-            for (int i = 0; i < textureCount; i++)
-            {
-                listBox1.Items.Add($"Texture {(i + 1).ToString()}");
-            }
-            label1.Text = $"Textures For Track {trackName} Found: {textureCount}";
+            int format = BitConverter.ToInt16(trackData, offset + 8);
 
+            //for palette
+            int paletteOffset = getPaletteOffset(trackData, paletteUID);
+            int paletteSize = BitConverter.ToInt16(trackData, paletteOffset + 4);
+
+            //data
+            byte[] textureData = trackData.Skip(offset + 20).Take(size).ToArray();
+            byte[] paletteData = trackData.Skip(paletteOffset + 8).Take(paletteSize).ToArray();
+
+            Bitmap prevImg = TextureViewer.GetTexture(textureData, paletteData, width, height, format);
+            return prevImg;
         }
+
+        //public static void populateTextures(byte[] trackData, ListBox listBox1, Label label1, String trackName)
+        //{
+        //    if (trackData == null)
+        //    {
+        //        MessageBox.Show("Please select a track first!");
+        //        return;
+        //    }
+
+        //    ushort textureCount = BitConverter.ToUInt16(trackData, Tracks.getTrackTextureGroupOffset(trackData));
+        //    for (int i = 0; i < textureCount; i++)
+        //    {
+        //        listBox1.Items.Add($"Texture {(i + 1).ToString()}");
+        //    }
+        //    label1.Text = $"Textures For Track {trackName} Found: {textureCount}";
+
+        //}
 
         public static int getTextureOffset(byte[] trackData,int textureIndex)
         {
-            int fileIndex = Tracks.getTrackTextureGroupOffset(trackData) + 4; //+ 4 for the 4byte header file
+            int trackGroupOffset = isTextureFile ? 0 : Tracks.getTrackTextureGroupOffset(trackData);
+            int fileIndex = trackGroupOffset + 4; //+ 4 for the 4byte header file
             int size;
             int currentIndex = 0;
             for (int i = 0; currentIndex < textureIndex; i++)
@@ -64,10 +123,11 @@ namespace DiddyKongModdingView
             return fileIndex;
         }
 
-        public static int getPaletteOffset(byte[] trackData,uint paletteUID)
+        public static int getPaletteOffset(byte[] trackData, uint paletteUID)
         {
-            ushort textureCount = BitConverter.ToUInt16(trackData, Tracks.getTrackTextureGroupOffset(trackData));
-            ushort paletteCount = BitConverter.ToUInt16(trackData, Tracks.getTrackTextureGroupOffset(trackData) + 2);
+            int trackGroupOffset = isTextureFile ? 0 : Tracks.getTrackTextureGroupOffset(trackData);
+            ushort textureCount =  BitConverter.ToUInt16(trackData, trackGroupOffset);
+            ushort paletteCount = BitConverter.ToUInt16(trackData, trackGroupOffset + 2);
             int fileIndex = getTextureOffset(trackData,textureCount); //Get Last texture offset/start of palette data
 
             uint curUID = 0;

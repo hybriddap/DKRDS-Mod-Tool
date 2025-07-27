@@ -16,7 +16,7 @@ namespace DiddyKongModdingView
             {
                 listBox1.Items.Add($"Asset {(i + 1).ToString()}");
             }
-            label1.Text = $"Assets Found: {assetCount}";
+            label1.Text = $"Total Asset Files Found: {assetCount}";
         }
 
         public static ushort getAssetID(byte[] assetData, int assetIndex)
@@ -44,10 +44,64 @@ namespace DiddyKongModdingView
 
         public static string getUnknownAssetFlags(byte[] assetData, int assetOffset)
         {
-            byte byte1 = assetData[assetOffset + 1];
-            byte byte2 = assetData[assetOffset + 2];
-            byte byte3 = assetData[assetOffset + 3];
-            return $"{byte1 + byte2 + byte3}";
+            int byte1 = assetData[assetOffset + 1];
+            int byte2 = assetData[assetOffset + 2];
+            int byte3 = assetData[assetOffset + 3];
+            string hexByte1 = byte1.ToString("X2");
+            string hexByte2 = byte2.ToString("X2");
+            string hexByte3 = byte3.ToString("X2");
+
+            return $"0x{hexByte1}{hexByte2}{hexByte3}";
+        }
+
+        public static string getAssetStringType(byte[] assetData, int assetOffset, Button decompressBtn)
+        {
+            int byte2 = assetData[assetOffset + 2];
+
+            bool canDecomp = getAssetCompressionType(assetData, assetOffset) == "LZ77";
+            
+            switch (byte2)
+            {
+                case 0x18:
+                    decompressBtn.Enabled = true && canDecomp;
+                    return "Model";
+                case 0x9A:
+                    decompressBtn.Enabled = true && canDecomp;
+                    return "Track";
+                case 0x0C:
+                    decompressBtn.Enabled = true && canDecomp;
+                    return "Texture";
+                default:
+                    decompressBtn.Enabled = false;
+                    return $"Unknown";
+            }
+        }
+
+        public static int getAssetIntType(byte[] assetData, int assetOffset)
+        {
+            int byte2 = assetData[assetOffset + 2];
+
+            switch (byte2)
+            {
+                case 0x18:
+                    return 1;   // Model
+                case 0x9A:
+                    return 2;   // Track
+                case 0x0C:
+                    return 3;   // Texture
+                default:
+                    return 0;   // Unknown or unsupported type
+            }
+        }
+
+        public static byte[] decompressAsset(byte[] assetData, int assetIndex, string type)
+        {
+            int assetOffset = getAssetOffset(assetData, assetIndex) + 8;//the asset offset
+            ushort assetCount = BitConverter.ToUInt16(assetData, 0);//the asset count is at the start of the file ?2305?
+            uint assetSize = BitConverter.ToUInt32(assetData, 10 + assetCount * 2 + assetIndex * 8);//used to get asset size
+            byte[] result = new byte[assetSize];//reate a byte array of the size of the asset
+            Array.Copy(assetData, assetOffset, result, 0, assetSize);//copy the asset data into the result array
+            return FileDecompressor.LZ77_Decompress(result, type);
         }
 
         public static byte getAssetType(byte[] assetData, int assetOffset)

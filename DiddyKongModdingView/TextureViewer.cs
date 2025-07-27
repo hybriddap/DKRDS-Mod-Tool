@@ -14,37 +14,7 @@ namespace DiddyKongModdingView
         public TextureViewer(byte[] textureData, byte[] paletteData, int width, int height,int type)
         {
             // Decode texture into Bitmap
-            Bitmap bitmap = null;
-            switch (type)
-            {
-                case 0: //unknown
-                    MessageBox.Show("Unknown Type");
-                    break;
-                case 1: //A3I5
-                    bitmap = DecodeA3I5IndexedTexture(textureData, paletteData, width, height);
-                    break;
-                case 2: //4 - color
-                    bitmap = Decode2bppIndexedTexture(textureData,paletteData, width, height);
-                    break;
-                case 3: //16 - color
-                    bitmap = Decode4bppIndexedTexture(textureData, paletteData, width, height);
-                    break;
-                case 4: //256 - color
-                    bitmap = DecodeIndexedTextureRGB555(textureData, paletteData, width, height);
-                    break;
-                case 5: //4x4 texel compressed (unused?)
-                    MessageBox.Show("Not Implemented");
-                    break;
-                case 6: //A5I3
-                    bitmap = DecodeA5I3IndexedTexture(textureData,paletteData,width, height);
-                    break;
-                case 7: //Direct color (RGB5551)
-                    bitmap = DecodeRGB5551Texture(textureData,width,height);
-                    break;
-                default:
-                    MessageBox.Show("Not Implemented");
-                    break;
-            }
+            Bitmap bitmap = GetTexture(textureData,paletteData,width,height,type);
 
             // Set up PictureBox
             PictureBox pictureBox = new PictureBox
@@ -60,7 +30,44 @@ namespace DiddyKongModdingView
             this.Icon = Resources.DKRDS_icon_Diddy;
         }
 
-        private Bitmap DecodeRGB5551Texture(byte[] texture, int width, int height)
+        public static Bitmap GetTexture(byte[] textureData, byte[] paletteData, int width, int height, int type)
+        {
+            // Decode texture into Bitmap
+            Bitmap bitmap = null;
+            switch (type)
+            {
+                case 0: //unknown
+                    MessageBox.Show("Unknown Type");
+                    break;
+                case 1: //A3I5
+                    bitmap = DecodeA3I5IndexedTexture(textureData, paletteData, width, height);
+                    break;
+                case 2: //4 - color
+                    bitmap = Decode2bppIndexedTexture(textureData, paletteData, width, height);
+                    break;
+                case 3: //16 - color
+                    bitmap = Decode4bppIndexedTexture(textureData, paletteData, width, height);
+                    break;
+                case 4: //256 - color
+                    bitmap = DecodeIndexedTextureRGB555(textureData, paletteData, width, height);
+                    break;
+                case 5: //4x4 texel compressed (unused?)
+                    MessageBox.Show("Not Implemented");
+                    break;
+                case 6: //A5I3
+                    bitmap = DecodeA5I3IndexedTexture(textureData, paletteData, width, height);
+                    break;
+                case 7: //Direct color (RGB5551)
+                    bitmap = DecodeRGB5551Texture(textureData, width, height);
+                    break;
+                default:
+                    MessageBox.Show("Not Implemented");
+                    break;
+            }
+            return bitmap;
+        }
+
+        private static Bitmap DecodeRGB5551Texture(byte[] texture, int width, int height)
         {
             if (texture.Length != width * height * 2)
                 throw new ArgumentException("Texture size must be width * height * 2 for RGB5551 format.");
@@ -93,7 +100,7 @@ namespace DiddyKongModdingView
         }
 
 
-        private Bitmap DecodeA5I3IndexedTexture(byte[] texture, byte[] palette, int width, int height)
+        private static Bitmap DecodeA5I3IndexedTexture(byte[] texture, byte[] palette, int width, int height)
         {
             if (palette.Length != 8 * 2)
                 throw new ArgumentException("Expected 16 bytes for 8-color RGB555 palette.");
@@ -127,7 +134,7 @@ namespace DiddyKongModdingView
         }
 
 
-        private Bitmap DecodeA3I5IndexedTexture(byte[] texture, byte[] palette, int width, int height)
+        private static Bitmap DecodeA3I5IndexedTexture(byte[] texture, byte[] palette, int width, int height)
         {
             if (palette.Length != 32 * 2)
                 throw new ArgumentException("Expected 64 bytes for 32-color RGB555 palette.");
@@ -161,7 +168,7 @@ namespace DiddyKongModdingView
         }
 
 
-        private Color DecodeRGB555Color(byte[] palette, int index)
+        private static Color DecodeRGB555Color(byte[] palette, int index)
         {
             ushort color = BitConverter.ToUInt16(palette, index * 2);
 
@@ -172,7 +179,7 @@ namespace DiddyKongModdingView
             return Color.FromArgb(r, g, b);
         }
 
-        private Bitmap Decode2bppIndexedTexture(byte[] texture, byte[] palette, int width, int height)
+        private static Bitmap Decode2bppIndexedTexture(byte[] texture, byte[] palette, int width, int height)
         {
             if (palette.Length != 4 * 2)
                 throw new ArgumentException("Expected 8 bytes for 4-color RGB555 palette.");
@@ -205,7 +212,7 @@ namespace DiddyKongModdingView
         }
 
 
-        private Bitmap Decode4bppIndexedTexture(byte[] texture, byte[] palette, int width, int height)
+        private static Bitmap Decode4bppIndexedTexture(byte[] texture, byte[] palette, int width, int height)
         {
             if (palette.Length != 16 * 2)
                 throw new ArgumentException("Expected 32 bytes for 16-color RGB555 palette.");
@@ -240,7 +247,7 @@ namespace DiddyKongModdingView
         }
 
 
-        private Bitmap DecodeIndexedTextureRGB555(byte[] texture, byte[] palette, int width, int height)
+        private static Bitmap DecodeIndexedTextureRGB555(byte[] texture, byte[] palette, int width, int height)
         {
             if (palette.Length != 256 * 2)
                 throw new ArgumentException("Expected 512 bytes for RGB555 palette.");

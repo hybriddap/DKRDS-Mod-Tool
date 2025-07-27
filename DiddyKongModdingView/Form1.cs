@@ -4,13 +4,13 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DiddyKongModdingView
 {
-    public partial class Form1 : Form
+    public partial class BackBtn : Form
     {
 
         private byte[] fileData;
         private byte[] trackData;
 
-        public Form1()
+        public BackBtn()
         {
             InitializeComponent();
         }
@@ -33,7 +33,8 @@ namespace DiddyKongModdingView
                     Assets.populateAssets(fileData, listBox1, label1);
 
                     TracksBtn.Enabled = true;
-                    OptionsBtn.Enabled = true;
+                    TexturesBtn.Enabled = true;
+                    ModelsBtn.Enabled = true;
                 }
             }
         }
@@ -46,51 +47,59 @@ namespace DiddyKongModdingView
 
         private void listBox1_SelectedIndexChanged(object sender, System.EventArgs e)
         {
-            int assetOffset = Assets.getAssetOffset(fileData, listBox1.SelectedIndex);
-            AssetID.Text = Assets.getAssetID(fileData,listBox1.SelectedIndex).ToString();
+            int assetIndex = Int32.Parse(listBox1.SelectedItem.ToString().Split()[1]) - 1;
+            int assetOffset = Assets.getAssetOffset(fileData, assetIndex);
+            AssetID.Text = Assets.getAssetID(fileData, assetIndex).ToString();
+            AssetType.Text = Assets.getAssetStringType(fileData, assetOffset, DecompressButton);
             AssetOffset.Text = $"{assetOffset.ToString()} Decimal";
-            AssetSize.Text = $"{Assets.getAssetSize(fileData, listBox1.SelectedIndex).ToString()}";
+            AssetSize.Text = $"{Assets.getAssetSize(fileData, assetIndex).ToString()}";
             CompressionType.Text = $"{Assets.getAssetCompressionType(fileData, assetOffset)}";
             UncompressedSize.Text = $"{Assets.getAssetUncompressedSize(fileData, assetOffset).ToString()}";
             UnknownFlags.Text = $"{Assets.getUnknownAssetFlags(fileData, assetOffset)}";
 
-            //For Tracks
-            if (TracksBtn.Enabled == false)
-            {
-                int assetIndex = Int32.Parse(listBox1.SelectedItem.ToString().Split()[1]) - 1;
-                int assetID = Assets.getAssetID(fileData, assetIndex);
-                trackData = Tracks.decompressTrack(fileData,assetIndex);
-                TrackName.Text = assetID == 534 ? "Ancient Lake" : assetID.ToString();
-                NumberOfSections.Text = $"{Tracks.getTrackSections(trackData).ToString()} Sections";
-                TrackSectionGroupOffset.Text = $"{Tracks.getTrackSectionGroupOffset(trackData).ToString()} Decimal";
-                NumberOfTextures.Text = $"{Tracks.getTrackNoTextures(trackData).ToString()} Textures";
-                TextureGroupOffset.Text = $"{Tracks.getTrackTextureGroupOffset(trackData).ToString()} Decimal";
-                FileSize.Text = $"{Tracks.getTrackFileSize(trackData).ToString()}";
-            }
+            goBackFunction();
 
             //For Textures
-            if (OptionsBtn.Enabled == false)
+            if (tableLayoutPanel3.Visible)
             {
                 int textureIndex = listBox1.SelectedIndex;
-                TextureUID.Text = $"{Textures.getTextureUID(trackData,textureIndex)}";
+                TextureUID.Text = $"{Textures.getTextureUID(trackData, textureIndex)}";
                 PaletteUID.Text = $"{Textures.getPaletteUID(trackData, textureIndex)}";
                 TextureFormat.Text = Textures.getTextureFormat(trackData, textureIndex);
                 TextureFlags.Text = $"{Textures.getTextureFlags(trackData, textureIndex)}";
                 TextureDimensions.Text = Textures.getTextureDimensions(trackData, textureIndex);
                 PaletteSize.Text = $"{Textures.getPaletteSize(trackData, Textures.getPaletteUID(trackData, textureIndex))}";
+                ViewTextureBtn.Visible = true;
+
+                //Set preview image
+                Bitmap prevImg = Textures.showPreview(trackData, textureIndex, Textures.getPaletteUID(trackData, textureIndex));
+                pictureBox1.Image = prevImg;
+                pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             }
         }
 
         private void AssetsBtn_Click(object sender, EventArgs e)
         {
+            button2.Enabled = false;
+            TextureDataBtn.Visible = false;
+
             AssetsBtn.Enabled = false;
             TracksBtn.Enabled = true;
-            OptionsBtn.Enabled = true;
+            TexturesBtn.Enabled = true;
+            ModelsBtn.Enabled = true;
+
+            DecompressButton.Enabled = false;
+            DecompressButton.Visible = true;
+
+            pictureBox1.Image = null; // Clear previous image
+            pictureBox1.Visible = false;
+
 
             ViewTextureBtn.Visible = false;
 
             listBox1.Items.Clear();
-            Assets.populateAssets(fileData,listBox1,label1);
+            Assets.populateAssets(fileData, listBox1, label1);
+
             tableLayoutPanel1.Visible = true;
             tableLayoutPanel2.Visible = false;
             tableLayoutPanel3.Visible = false;
@@ -98,45 +107,196 @@ namespace DiddyKongModdingView
 
         private void TracksBtn_Click(object sender, EventArgs e)
         {
+            button2.Enabled = false;
+            TextureDataBtn.Visible = false;
+
             TracksBtn.Enabled = false;
             AssetsBtn.Enabled = true;
-            OptionsBtn.Enabled = true;
+            TexturesBtn.Enabled = true;
+            ModelsBtn.Enabled = true;
+
+            DecompressButton.Enabled = false;
+            DecompressButton.Visible = true;
+
+            pictureBox1.Image = null; // Clear previous image
+            pictureBox1.Visible = false;
 
             ViewTextureBtn.Visible = false;
 
             listBox1.Items.Clear();
-            Tracks.populateTracks(fileData,listBox1,label1);
-            tableLayoutPanel1.Visible = false;
-            tableLayoutPanel2.Visible = true;
+            Tracks.populateTracks(fileData, listBox1, label1);
+
+            tableLayoutPanel1.Visible = true;
+            tableLayoutPanel2.Visible = false;
             tableLayoutPanel3.Visible = false;
         }
 
-        private void OptionsBtn_Click(object sender, EventArgs e)
+        //Textures Button Click
+        private void TexturesBtn_Click(object sender, EventArgs e)
         {
-            OptionsBtn.Enabled = false;
+            button2.Enabled = false;
+            TextureDataBtn.Visible = false;
+
+            TexturesBtn.Enabled = false;
             TracksBtn.Enabled = true;
             AssetsBtn.Enabled = true;
+            ModelsBtn.Enabled = true;
+
+            DecompressButton.Enabled = false;
+            DecompressButton.Visible = true;
+
+            pictureBox1.Image = null; // Clear previous image
+            pictureBox1.Visible = false;
+
+            ViewTextureBtn.Visible = false;
 
             listBox1.Items.Clear();
-            tableLayoutPanel1.Visible = false;
+            Textures.populateTextures(fileData, listBox1, label1);
+
+            tableLayoutPanel1.Visible = true;
             tableLayoutPanel2.Visible = false;
-            tableLayoutPanel3.Visible = true;
+            tableLayoutPanel3.Visible = false;
 
-            ViewTextureBtn.Visible = true;
+            //ViewTextureBtn.Visible = true;
+        }
 
-            Textures.populateTextures(trackData,listBox1,label1,TrackName.Text);
+        private void ModelsBtn_Click(object sender, EventArgs e)
+        {
+            button2.Enabled = false;
+            TextureDataBtn.Visible = false;
+
+            TexturesBtn.Enabled = true;
+            TracksBtn.Enabled = true;
+            AssetsBtn.Enabled = true;
+            ModelsBtn.Enabled = false;
+
+            DecompressButton.Enabled = false;
+            DecompressButton.Visible = true;
+
+            pictureBox1.Image = null; // Clear previous image
+            pictureBox1.Visible = false;
+
+            ViewTextureBtn.Visible = false;
+
+            listBox1.Items.Clear();
+            Models.populateModels(fileData, listBox1, label1);
+
+            tableLayoutPanel1.Visible = true;
+            tableLayoutPanel2.Visible = false;
+            tableLayoutPanel3.Visible = false;
+        }
+
+        private void DecompressButton_Click(object sender, EventArgs e)
+        {
+            int assetIndex = Int32.Parse(listBox1.SelectedItem.ToString().Split()[1]) - 1;
+            int assetOffset = Assets.getAssetOffset(fileData, assetIndex);
+            string assetType = Assets.getAssetStringType(fileData, assetOffset, DecompressButton);
+            byte[] data=Assets.decompressAsset(fileData, assetIndex, assetType);
+            trackData = data;
+
+            button2.Enabled = true;
+            DecompressButton.Enabled = false;
+            DecompressButton.Visible = false;
+
+            switch (assetType)
+            {
+                case "Track":
+                    tableLayoutPanel1.Visible = false;
+                    tableLayoutPanel2.Visible = true;
+                    tableLayoutPanel3.Visible = false;
+                    TextureDataBtn.Visible = true;
+                    showTrackData(data);
+                    break;
+                case "Texture":
+                    tableLayoutPanel1.Visible = false;
+                    tableLayoutPanel2.Visible = false;
+                    tableLayoutPanel3.Visible = true;
+                    ViewTextureBtn.Visible = false;
+                    showTextureData(data);
+                    pictureBox1.Image = null; // Clear previous image
+                    pictureBox1.Visible = true;
+                    break;
+                case "Model":
+                    break;
+                default:
+                    MessageBox.Show("Asset decompression not supported for this type.");
+                    break;
+            }
         }
 
         private void ViewTextureBtn_Click(object sender, EventArgs e)
         {
-            if (trackData == null || OptionsBtn.Enabled==true || TextureUID.Text==null)
+            if (trackData == null || TextureUID.Text == null)
             {
                 MessageBox.Show("Please select a texture first!");
                 return;
             }
+            int textureIndex = Int32.Parse(listBox1.SelectedItem.ToString().Split()[1]) - 1;
+            Textures.showImage(trackData, textureIndex, Textures.getPaletteUID(trackData, textureIndex));
+        }
 
-            int textureIndex = listBox1.SelectedIndex;
-            Textures.showImage(trackData,textureIndex, Textures.getPaletteUID(trackData, textureIndex));
+        private void goBackFunction(bool fromBtn=false)
+        {
+            if (tableLayoutPanel1.Visible || tableLayoutPanel3.Visible && !fromBtn)
+                return;
+
+            pictureBox1.Image = null; // Clear previous image
+            pictureBox1.Visible = false;
+
+            button2.Enabled = false;
+            DecompressButton.Visible = true;
+            TextureDataBtn.Visible = false;
+            ViewTextureBtn.Visible = false;
+
+            tableLayoutPanel1.Visible = true;
+            tableLayoutPanel2.Visible = false;
+            tableLayoutPanel3.Visible = false;
+
+            listBox1.Items.Clear();
+            if (TexturesBtn.Enabled == false)
+                Textures.populateTextures(fileData, listBox1, label1);
+            else if (TracksBtn.Enabled == false)
+                Tracks.populateTracks(fileData, listBox1, label1);
+            else if (AssetsBtn.Enabled == false)
+                Assets.populateAssets(fileData, listBox1, label1);
+            else if (ModelsBtn.Enabled == false)
+                Models.populateModels(fileData, listBox1, label1);
+        }
+
+        private void showTrackData(byte[] trackData)
+        {
+            int assetIndex = Int32.Parse(listBox1.SelectedItem.ToString().Split()[1]) - 1;
+            int assetID = Assets.getAssetID(fileData, assetIndex);
+            TrackName.Text = assetID == 534 ? "Ancient Lake" : assetID.ToString();
+            NumberOfSections.Text = $"{Tracks.getTrackSections(trackData).ToString()} Sections";
+            TrackSectionGroupOffset.Text = $"{Tracks.getTrackSectionGroupOffset(trackData).ToString()} Decimal";
+            NumberOfTextures.Text = $"{Tracks.getTrackNoTextures(trackData).ToString()} Textures";
+            TextureGroupOffset.Text = $"{Tracks.getTrackTextureGroupOffset(trackData).ToString()} Decimal";
+            FileSize.Text = $"{Tracks.getTrackFileSize(trackData).ToString()}";
+        }
+
+        private void showTextureData(byte[] textureData, string name="Texture")
+        {
+            listBox1.Items.Clear();
+            Textures.getAllTextures(textureData, listBox1, label1, name);
+            pictureBox1.Image = null; // Clear previous image
+            pictureBox1.Visible = true;
+        }
+
+        //Back Button Click
+        private void button2_Click(object sender, EventArgs e)
+        {
+            goBackFunction(true);
+        }
+
+        private void TextureDataBtn_Click(object sender, EventArgs e)
+        {
+            tableLayoutPanel1.Visible = false;
+            tableLayoutPanel2.Visible = false;
+            tableLayoutPanel3.Visible = true;
+            TextureDataBtn.Visible = false;
+            ViewTextureBtn.Visible = true;
+            showTextureData(trackData,TrackName.Text);
         }
     }
 }

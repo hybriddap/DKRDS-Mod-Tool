@@ -2,7 +2,7 @@
 
 namespace DiddyKongModdingView
 {
-    partial class Form1
+    partial class BackBtn
     {
         /// <summary>
         ///  Required designer variable.
@@ -46,10 +46,13 @@ namespace DiddyKongModdingView
             tableLayoutPanel1 = new TableLayoutPanel();
             label8 = new Label();
             UnknownFlags = new TextBox();
+            label21 = new Label();
+            AssetType = new TextBox();
             flowLayoutPanel1 = new FlowLayoutPanel();
             AssetsBtn = new Button();
             TracksBtn = new Button();
-            OptionsBtn = new Button();
+            ModelsBtn = new Button();
+            TexturesBtn = new Button();
             label7 = new Label();
             tableLayoutPanel2 = new TableLayoutPanel();
             TextureGroupOffset = new TextBox();
@@ -78,10 +81,15 @@ namespace DiddyKongModdingView
             label19 = new Label();
             label20 = new Label();
             ViewTextureBtn = new Button();
+            DecompressButton = new Button();
+            button2 = new Button();
+            TextureDataBtn = new Button();
+            pictureBox1 = new PictureBox();
             tableLayoutPanel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             tableLayoutPanel2.SuspendLayout();
             tableLayoutPanel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // button1
@@ -109,9 +117,9 @@ namespace DiddyKongModdingView
             label1.AutoSize = true;
             label1.Location = new Point(12, 430);
             label1.Name = "label1";
-            label1.Size = new Size(89, 15);
+            label1.Size = new Size(139, 15);
             label1.TabIndex = 3;
-            label1.Text = "Assets Found: 0";
+            label1.Text = "Total Asset Files Found: 0";
             // 
             // label2
             // 
@@ -125,7 +133,7 @@ namespace DiddyKongModdingView
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(6, 114);
+            label4.Location = new Point(6, 91);
             label4.Name = "label4";
             label4.Size = new Size(73, 15);
             label4.TabIndex = 6;
@@ -134,7 +142,7 @@ namespace DiddyKongModdingView
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(6, 56);
+            label3.Location = new Point(6, 148);
             label3.Name = "label3";
             label3.Size = new Size(61, 15);
             label3.TabIndex = 7;
@@ -142,7 +150,7 @@ namespace DiddyKongModdingView
             // 
             // AssetOffset
             // 
-            AssetOffset.Location = new Point(146, 117);
+            AssetOffset.Location = new Point(146, 94);
             AssetOffset.Name = "AssetOffset";
             AssetOffset.ReadOnly = true;
             AssetOffset.Size = new Size(94, 23);
@@ -158,7 +166,7 @@ namespace DiddyKongModdingView
             // 
             // AssetSize
             // 
-            AssetSize.Location = new Point(146, 59);
+            AssetSize.Location = new Point(146, 151);
             AssetSize.Name = "AssetSize";
             AssetSize.ReadOnly = true;
             AssetSize.Size = new Size(94, 23);
@@ -167,7 +175,7 @@ namespace DiddyKongModdingView
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(6, 171);
+            label6.Location = new Point(6, 196);
             label6.Name = "label6";
             label6.Size = new Size(108, 15);
             label6.TabIndex = 14;
@@ -176,7 +184,7 @@ namespace DiddyKongModdingView
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(6, 239);
+            label5.Location = new Point(6, 246);
             label5.Name = "label5";
             label5.Size = new Size(112, 15);
             label5.TabIndex = 15;
@@ -184,7 +192,7 @@ namespace DiddyKongModdingView
             // 
             // CompressionType
             // 
-            CompressionType.Location = new Point(146, 174);
+            CompressionType.Location = new Point(146, 199);
             CompressionType.Name = "CompressionType";
             CompressionType.ReadOnly = true;
             CompressionType.Size = new Size(94, 23);
@@ -192,7 +200,7 @@ namespace DiddyKongModdingView
             // 
             // UncompressedSize
             // 
-            UncompressedSize.Location = new Point(146, 242);
+            UncompressedSize.Location = new Point(146, 249);
             UncompressedSize.Name = "UncompressedSize";
             UncompressedSize.ReadOnly = true;
             UncompressedSize.Size = new Size(94, 23);
@@ -204,34 +212,37 @@ namespace DiddyKongModdingView
             tableLayoutPanel1.ColumnCount = 2;
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-            tableLayoutPanel1.Controls.Add(UncompressedSize, 1, 4);
-            tableLayoutPanel1.Controls.Add(label5, 0, 4);
-            tableLayoutPanel1.Controls.Add(CompressionType, 1, 3);
-            tableLayoutPanel1.Controls.Add(label6, 0, 3);
             tableLayoutPanel1.Controls.Add(AssetOffset, 1, 2);
             tableLayoutPanel1.Controls.Add(label4, 0, 2);
-            tableLayoutPanel1.Controls.Add(AssetSize, 1, 1);
-            tableLayoutPanel1.Controls.Add(label3, 0, 1);
             tableLayoutPanel1.Controls.Add(label2, 0, 0);
             tableLayoutPanel1.Controls.Add(AssetID, 1, 0);
-            tableLayoutPanel1.Controls.Add(label8, 0, 5);
-            tableLayoutPanel1.Controls.Add(UnknownFlags, 1, 5);
+            tableLayoutPanel1.Controls.Add(label8, 0, 6);
+            tableLayoutPanel1.Controls.Add(UnknownFlags, 1, 6);
+            tableLayoutPanel1.Controls.Add(UncompressedSize, 1, 5);
+            tableLayoutPanel1.Controls.Add(label5, 0, 5);
+            tableLayoutPanel1.Controls.Add(label6, 0, 4);
+            tableLayoutPanel1.Controls.Add(CompressionType, 1, 4);
+            tableLayoutPanel1.Controls.Add(label3, 0, 3);
+            tableLayoutPanel1.Controls.Add(AssetSize, 1, 3);
+            tableLayoutPanel1.Controls.Add(label21, 0, 1);
+            tableLayoutPanel1.Controls.Add(AssetType, 1, 1);
             tableLayoutPanel1.Location = new Point(258, 84);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
-            tableLayoutPanel1.RowCount = 6;
+            tableLayoutPanel1.RowCount = 7;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 47.55245F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 52.44755F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 54F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 65F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 49F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 42F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 45F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 47F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 52F));
             tableLayoutPanel1.Size = new Size(283, 337);
             tableLayoutPanel1.TabIndex = 19;
             // 
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(6, 291);
+            label8.Location = new Point(6, 281);
             label8.Name = "label8";
             label8.Size = new Size(91, 15);
             label8.TabIndex = 18;
@@ -239,20 +250,38 @@ namespace DiddyKongModdingView
             // 
             // UnknownFlags
             // 
-            UnknownFlags.Location = new Point(146, 294);
+            UnknownFlags.Location = new Point(146, 284);
             UnknownFlags.Name = "UnknownFlags";
             UnknownFlags.ReadOnly = true;
             UnknownFlags.Size = new Size(94, 23);
             UnknownFlags.TabIndex = 19;
             // 
+            // label21
+            // 
+            label21.AutoSize = true;
+            label21.Location = new Point(6, 45);
+            label21.Name = "label21";
+            label21.Size = new Size(66, 15);
+            label21.TabIndex = 20;
+            label21.Text = "Asset Type:";
+            // 
+            // AssetType
+            // 
+            AssetType.Location = new Point(146, 48);
+            AssetType.Name = "AssetType";
+            AssetType.ReadOnly = true;
+            AssetType.Size = new Size(94, 23);
+            AssetType.TabIndex = 21;
+            // 
             // flowLayoutPanel1
             // 
             flowLayoutPanel1.Controls.Add(AssetsBtn);
             flowLayoutPanel1.Controls.Add(TracksBtn);
-            flowLayoutPanel1.Controls.Add(OptionsBtn);
-            flowLayoutPanel1.Location = new Point(277, 47);
+            flowLayoutPanel1.Controls.Add(ModelsBtn);
+            flowLayoutPanel1.Controls.Add(TexturesBtn);
+            flowLayoutPanel1.Location = new Point(12, 47);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(243, 31);
+            flowLayoutPanel1.Size = new Size(231, 31);
             flowLayoutPanel1.TabIndex = 20;
             // 
             // AssetsBtn
@@ -260,42 +289,53 @@ namespace DiddyKongModdingView
             AssetsBtn.Enabled = false;
             AssetsBtn.Location = new Point(3, 3);
             AssetsBtn.Name = "AssetsBtn";
-            AssetsBtn.Size = new Size(75, 23);
+            AssetsBtn.Size = new Size(41, 23);
             AssetsBtn.TabIndex = 0;
-            AssetsBtn.Text = "Assets";
+            AssetsBtn.Text = "All";
             AssetsBtn.UseVisualStyleBackColor = true;
             AssetsBtn.Click += AssetsBtn_Click;
             // 
             // TracksBtn
             // 
             TracksBtn.Enabled = false;
-            TracksBtn.Location = new Point(84, 3);
+            TracksBtn.Location = new Point(50, 3);
             TracksBtn.Name = "TracksBtn";
-            TracksBtn.Size = new Size(75, 23);
+            TracksBtn.Size = new Size(48, 23);
             TracksBtn.TabIndex = 1;
             TracksBtn.Text = "Tracks";
             TracksBtn.UseVisualStyleBackColor = true;
             TracksBtn.Click += TracksBtn_Click;
             // 
-            // OptionsBtn
+            // ModelsBtn
             // 
-            OptionsBtn.Enabled = false;
-            OptionsBtn.Location = new Point(165, 3);
-            OptionsBtn.Name = "OptionsBtn";
-            OptionsBtn.Size = new Size(75, 23);
-            OptionsBtn.TabIndex = 2;
-            OptionsBtn.Text = "Textures";
-            OptionsBtn.UseVisualStyleBackColor = true;
-            OptionsBtn.Click += OptionsBtn_Click;
+            ModelsBtn.Enabled = false;
+            ModelsBtn.Location = new Point(104, 3);
+            ModelsBtn.Name = "ModelsBtn";
+            ModelsBtn.Size = new Size(55, 23);
+            ModelsBtn.TabIndex = 3;
+            ModelsBtn.Text = "Models";
+            ModelsBtn.UseVisualStyleBackColor = true;
+            ModelsBtn.Click += ModelsBtn_Click;
+            // 
+            // TexturesBtn
+            // 
+            TexturesBtn.Enabled = false;
+            TexturesBtn.Location = new Point(165, 3);
+            TexturesBtn.Name = "TexturesBtn";
+            TexturesBtn.Size = new Size(58, 23);
+            TexturesBtn.TabIndex = 2;
+            TexturesBtn.Text = "Textures";
+            TexturesBtn.UseVisualStyleBackColor = true;
+            TexturesBtn.Click += TexturesBtn_Click;
             // 
             // label7
             // 
             label7.Anchor = AnchorStyles.Top;
             label7.AutoSize = true;
-            label7.Font = new Font("Yu Gothic", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label7.Location = new Point(308, 17);
+            label7.Font = new Font("Yu Gothic", 19.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label7.Location = new Point(278, 38);
             label7.Name = "label7";
-            label7.Size = new Size(188, 27);
+            label7.Size = new Size(240, 35);
             label7.TabIndex = 21;
             label7.Text = "DKR DS Mod Tool";
             label7.TextAlign = ContentAlignment.TopCenter;
@@ -577,24 +617,70 @@ namespace DiddyKongModdingView
             ViewTextureBtn.Visible = false;
             ViewTextureBtn.Click += ViewTextureBtn_Click;
             // 
-            // Form1
+            // DecompressButton
+            // 
+            DecompressButton.Enabled = false;
+            DecompressButton.Location = new Point(345, 427);
+            DecompressButton.Name = "DecompressButton";
+            DecompressButton.Size = new Size(106, 23);
+            DecompressButton.TabIndex = 25;
+            DecompressButton.Text = "Decompress";
+            DecompressButton.UseVisualStyleBackColor = true;
+            DecompressButton.Click += DecompressButton_Click;
+            // 
+            // button2
+            // 
+            button2.Enabled = false;
+            button2.Location = new Point(258, 427);
+            button2.Name = "button2";
+            button2.Size = new Size(58, 23);
+            button2.TabIndex = 26;
+            button2.Text = "Back";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
+            // 
+            // TextureDataBtn
+            // 
+            TextureDataBtn.Location = new Point(345, 426);
+            TextureDataBtn.Name = "TextureDataBtn";
+            TextureDataBtn.Size = new Size(106, 23);
+            TextureDataBtn.TabIndex = 27;
+            TextureDataBtn.Text = "Texture Data";
+            TextureDataBtn.UseVisualStyleBackColor = true;
+            TextureDataBtn.Visible = false;
+            TextureDataBtn.Click += TextureDataBtn_Click;
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Location = new Point(547, 84);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(225, 225);
+            pictureBox1.TabIndex = 28;
+            pictureBox1.TabStop = false;
+            pictureBox1.Visible = false;
+            // 
+            // BackBtn
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(784, 461);
+            Controls.Add(pictureBox1);
+            Controls.Add(TextureDataBtn);
+            Controls.Add(button2);
             Controls.Add(ViewTextureBtn);
-            Controls.Add(tableLayoutPanel3);
-            Controls.Add(tableLayoutPanel2);
             Controls.Add(label7);
             Controls.Add(flowLayoutPanel1);
             Controls.Add(tableLayoutPanel1);
             Controls.Add(label1);
             Controls.Add(listBox1);
             Controls.Add(button1);
+            Controls.Add(tableLayoutPanel3);
+            Controls.Add(tableLayoutPanel2);
+            Controls.Add(DecompressButton);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Icon = Resources.DKRDS_icon_Diddy;
             MaximizeBox = false;
-            Name = "Form1";
+            Name = "BackBtn";
             Text = "Diddy Kong Mod Tool";
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
@@ -603,6 +689,7 @@ namespace DiddyKongModdingView
             tableLayoutPanel2.PerformLayout();
             tableLayoutPanel3.ResumeLayout(false);
             tableLayoutPanel3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -625,7 +712,7 @@ namespace DiddyKongModdingView
         private FlowLayoutPanel flowLayoutPanel1;
         private Button AssetsBtn;
         private Button TracksBtn;
-        private Button OptionsBtn;
+        private Button TexturesBtn;
         private Label label7;
         private Label label8;
         private TextBox UnknownFlags;
@@ -656,5 +743,12 @@ namespace DiddyKongModdingView
         private Label label19;
         private Label label20;
         private Button ViewTextureBtn;
+        private Label label21;
+        private TextBox AssetType;
+        private Button DecompressButton;
+        private Button ModelsBtn;
+        private Button button2;
+        private Button TextureDataBtn;
+        private PictureBox pictureBox1;
     }
 }

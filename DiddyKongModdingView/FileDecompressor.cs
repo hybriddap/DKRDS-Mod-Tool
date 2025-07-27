@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DiddyKongModdingView
 {
-    internal static class Decompressor
+    internal static class FileDecompressor
     {
         private static byte[] LZ77(byte[] data)
         {
@@ -62,14 +62,14 @@ namespace DiddyKongModdingView
             return result;
         }
 
-        public static byte[] LZ77_Decompress(byte[] data)
+        public static byte[] LZ77_Decompress(byte[] data,string assetType)
         {
-            string outputFile = "track_decompressed.bin";
+            string outputFile = $"{assetType}_decompressed.bin";
 
             byte[] output = LZ77(data);
 
-            //File.WriteAllBytes(outputFile, output);
-            MessageBox.Show("Track file decompression complete.");
+            File.WriteAllBytes(outputFile, output);
+            MessageBox.Show($"{assetType} file decompression complete.");
             return output;
         }
     }
