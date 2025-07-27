@@ -6,7 +6,8 @@ An open-source modding tool for **Diddy Kong Racing DS**.
 Currently, it supports:
 - Viewing basic asset data
 - Viewing basic track data
-- Viewing track textures
+- Decompression of Model Files
+- Viewing track & raw textures
 
 I will implement further functionality throughout development.
 
@@ -24,7 +25,7 @@ This is a **Windows Forms (.NET)** application. To build it:
 
 1. **Clone the repository**:
    ```bash
-   https://github.com/hybriddap/DKRDS-Mod-Tool.git
+   git clone https://github.com/hybriddap/DKRDS-Mod-Tool.git
    cd DKRDS-Mod-Tool
 2. **Open the solution in Visual Studio**:
 - Open DiddyKongModdingView.sln with Visual Studio 2022 or newer.
