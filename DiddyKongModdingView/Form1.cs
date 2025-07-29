@@ -103,6 +103,7 @@ namespace DiddyKongModdingView
             tableLayoutPanel1.Visible = true;
             tableLayoutPanel2.Visible = false;
             tableLayoutPanel3.Visible = false;
+            tableLayoutPanel4.Visible = false;
         }
 
         private void TracksBtn_Click(object sender, EventArgs e)
@@ -129,6 +130,7 @@ namespace DiddyKongModdingView
             tableLayoutPanel1.Visible = true;
             tableLayoutPanel2.Visible = false;
             tableLayoutPanel3.Visible = false;
+            tableLayoutPanel4.Visible = false;
         }
 
         //Textures Button Click
@@ -156,6 +158,7 @@ namespace DiddyKongModdingView
             tableLayoutPanel1.Visible = true;
             tableLayoutPanel2.Visible = false;
             tableLayoutPanel3.Visible = false;
+            tableLayoutPanel4.Visible = false;
 
             //ViewTextureBtn.Visible = true;
         }
@@ -184,14 +187,16 @@ namespace DiddyKongModdingView
             tableLayoutPanel1.Visible = true;
             tableLayoutPanel2.Visible = false;
             tableLayoutPanel3.Visible = false;
+            tableLayoutPanel4.Visible = false;
         }
 
         private void DecompressButton_Click(object sender, EventArgs e)
         {
             int assetIndex = Int32.Parse(listBox1.SelectedItem.ToString().Split()[1]) - 1;
             int assetOffset = Assets.getAssetOffset(fileData, assetIndex);
+            string compType = Assets.getAssetCompressionType(fileData, assetOffset);
             string assetType = Assets.getAssetStringType(fileData, assetOffset, DecompressButton);
-            byte[] data=Assets.decompressAsset(fileData, assetIndex, assetType);
+            byte[] data=Assets.decompressAsset(fileData, assetIndex, assetType,compType);
             trackData = data;
 
             button2.Enabled = true;
@@ -204,6 +209,7 @@ namespace DiddyKongModdingView
                     tableLayoutPanel1.Visible = false;
                     tableLayoutPanel2.Visible = true;
                     tableLayoutPanel3.Visible = false;
+                    tableLayoutPanel4.Visible = false;
                     TextureDataBtn.Visible = true;
                     showTrackData(data);
                     break;
@@ -211,12 +217,19 @@ namespace DiddyKongModdingView
                     tableLayoutPanel1.Visible = false;
                     tableLayoutPanel2.Visible = false;
                     tableLayoutPanel3.Visible = true;
+                    tableLayoutPanel4.Visible = false;
                     ViewTextureBtn.Visible = false;
                     showTextureData(data);
                     pictureBox1.Image = null; // Clear previous image
                     pictureBox1.Visible = true;
                     break;
                 case "Model":
+                    tableLayoutPanel1.Visible = false;
+                    tableLayoutPanel2.Visible = false;
+                    tableLayoutPanel3.Visible = false;
+                    tableLayoutPanel4.Visible = true;
+                    TextureDataBtn.Visible = true;
+                    showModelData(data);
                     break;
                 default:
                     MessageBox.Show("Asset decompression not supported for this type.");
@@ -251,6 +264,7 @@ namespace DiddyKongModdingView
             tableLayoutPanel1.Visible = true;
             tableLayoutPanel2.Visible = false;
             tableLayoutPanel3.Visible = false;
+            tableLayoutPanel4.Visible = false;
 
             listBox1.Items.Clear();
             if (TexturesBtn.Enabled == false)
@@ -275,6 +289,18 @@ namespace DiddyKongModdingView
             FileSize.Text = $"{Tracks.getTrackFileSize(trackData).ToString()}";
         }
 
+        private void showModelData(byte[] modelData)
+        {
+            int assetIndex = Int32.Parse(listBox1.SelectedItem.ToString().Split()[1]) - 1;
+            int assetID = Assets.getAssetID(fileData, assetIndex);
+            NoOfModels.Text = $"{Models.getNumberModels(modelData).ToString()}";
+            NoOfTexturesModel.Text = $"{Models.getNumberTextures(modelData).ToString()}";
+            ModelGroup.Text = $"{Models.getModelGroupOffset(modelData).ToString()} Decimal";
+            TextureGroupModels.Text = $"{Models.getTextureGroupOffset(modelData).ToString()} Decimal";
+            TextureRefTable.Text = $"{Models.getTextureReferenceTableOffset(modelData).ToString()} Decimal";
+            UnknownVarFlags.Text = $"{Models.getUnknownVarious(modelData).ToString()}";
+        }
+
         private void showTextureData(byte[] textureData, string name="Texture")
         {
             listBox1.Items.Clear();
@@ -291,12 +317,17 @@ namespace DiddyKongModdingView
 
         private void TextureDataBtn_Click(object sender, EventArgs e)
         {
+            bool isModelFile = tableLayoutPanel4.Visible;
             tableLayoutPanel1.Visible = false;
             tableLayoutPanel2.Visible = false;
             tableLayoutPanel3.Visible = true;
+            tableLayoutPanel4.Visible = false;
             TextureDataBtn.Visible = false;
             ViewTextureBtn.Visible = true;
-            showTextureData(trackData,TrackName.Text);
+            if (isModelFile)
+                showTextureData(trackData, "Model");
+            else
+                showTextureData(trackData,TrackName.Text);
         }
     }
 }

@@ -62,14 +62,75 @@ namespace DiddyKongModdingView
             return result;
         }
 
-        public static byte[] LZ77_Decompress(byte[] data,string assetType)
+        private static byte[] Run_Length(byte[] input)
+        {
+            List<byte> output = new List<byte>();
+            int i = 0;
+
+            while (i < input.Length)
+            {
+                byte control = input[i++];
+
+                if ((control & 0x80) == 0)
+                {
+                    // Literal run: copy next (control + 1) bytes
+                    int count = (control & 0x7F) + 1;
+                    if (i + count > input.Length)
+                        throw new InvalidDataException("Unexpected end of input during literal run.");
+
+                    for (int j = 0; j < count; j++)
+                        output.Add(input[i++]);
+                }
+                else
+                {
+                    // Repeat run: repeat next byte ((control & 0x7F) + 3) times
+                    int count = (control & 0x7F) + 3;
+                    if (i >= input.Length)
+                        throw new InvalidDataException("Unexpected end of input during repeat run.");
+
+                    byte value = input[i++];
+                    for (int j = 0; j < count; j++)
+                        output.Add(value);
+                }
+            }
+
+            return output.ToArray();
+        }
+
+
+
+
+        public static byte[] Decompress_Handler(byte[] data,string assetType,string compressionType)
         {
             string outputFile = $"{assetType}_decompressed.bin";
+            byte[] output;
 
-            byte[] output = LZ77(data);
-
-            File.WriteAllBytes(outputFile, output);
-            MessageBox.Show($"{assetType} file decompression complete.");
+            if (compressionType == "No Compression")
+            {
+                File.WriteAllBytes(outputFile, data);
+                output = data;
+            }
+            else if (compressionType == "Huffman")
+            {
+                File.WriteAllBytes(outputFile, data);
+                output = data;
+            }
+            else if (compressionType == "RunLength")
+            {
+                output = Run_Length(data);
+                File.WriteAllBytes(outputFile, output);
+                MessageBox.Show($"{assetType} file decompression complete.");
+            }
+            else if (compressionType == "LZ77")
+            {
+                output = LZ77(data);
+                File.WriteAllBytes(outputFile, output);
+                MessageBox.Show($"{assetType} file decompression complete.");
+            }
+            else
+            {
+                output = null;
+            }
             return output;
         }
     }

@@ -10,6 +10,8 @@ namespace DiddyKongModdingView
     internal class Textures
     {
         private static bool isTextureFile = false; //Used to determine if the texture is from a texture file or a track file
+        private static bool isModelFile = false; //Used to determine if the texture is from a model file or a track file
+
         public static void populateTextures(byte[] assetData, ListBox listBox1, Label label1)
         {
             int textureCount = 0;
@@ -34,8 +36,9 @@ namespace DiddyKongModdingView
             }
             
             isTextureFile = trackName == "Texture"; 
-            
-            ushort textureCount = trackName == "Texture" ? BitConverter.ToUInt16(trackData, 0) : BitConverter.ToUInt16(trackData, Tracks.getTrackTextureGroupOffset(trackData));
+            isModelFile = trackName == "Model";
+
+            int textureCount = trackName == "Texture" ? BitConverter.ToUInt16(trackData, 0) : trackName == "Model"? BitConverter.ToUInt16(trackData, 8) :  BitConverter.ToUInt16(trackData, Tracks.getTrackTextureGroupOffset(trackData));
             for (int i = 0; i < textureCount; i++)
             {
                 listBox1.Items.Add($"Texture {(i + 1).ToString()}");
@@ -108,7 +111,7 @@ namespace DiddyKongModdingView
 
         public static int getTextureOffset(byte[] trackData,int textureIndex)
         {
-            int trackGroupOffset = isTextureFile ? 0 : Tracks.getTrackTextureGroupOffset(trackData);
+            int trackGroupOffset = isTextureFile ? 0 : isModelFile ? Models.getTextureGroupOffset(trackData) : Tracks.getTrackTextureGroupOffset(trackData);
             int fileIndex = trackGroupOffset + 4; //+ 4 for the 4byte header file
             int size;
             int currentIndex = 0;
@@ -117,7 +120,6 @@ namespace DiddyKongModdingView
                 size = BitConverter.ToInt16(trackData, fileIndex + 14);
                 fileIndex += 20; //Go to end of Texture Entry Header. This now points to start of data
                 fileIndex += size * 0x10; //Go to end of Texture Data to get to next Texture Entry. This points to end of data, start of next texture header
-
                 currentIndex++;
             }
             return fileIndex;
@@ -125,11 +127,10 @@ namespace DiddyKongModdingView
 
         public static int getPaletteOffset(byte[] trackData, uint paletteUID)
         {
-            int trackGroupOffset = isTextureFile ? 0 : Tracks.getTrackTextureGroupOffset(trackData);
+            int trackGroupOffset = isTextureFile ? 0 : isModelFile ? Models.getTextureGroupOffset(trackData) : Tracks.getTrackTextureGroupOffset(trackData);
             ushort textureCount =  BitConverter.ToUInt16(trackData, trackGroupOffset);
             ushort paletteCount = BitConverter.ToUInt16(trackData, trackGroupOffset + 2);
             int fileIndex = getTextureOffset(trackData,textureCount); //Get Last texture offset/start of palette data
-
             uint curUID = 0;
             int size;
             for (int i = 0; i < paletteCount; i++)

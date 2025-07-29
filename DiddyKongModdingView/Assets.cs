@@ -58,8 +58,12 @@ namespace DiddyKongModdingView
         {
             int byte2 = assetData[assetOffset + 2];
 
-            bool canDecomp = getAssetCompressionType(assetData, assetOffset) == "LZ77";
+            string compType = getAssetCompressionType(assetData, assetOffset);
+
+            bool canDecomp = compType == "LZ77" || compType == "No Compression"; //|| compType == "RunLength" || compType == "Huffman";
             
+            decompressBtn.Text = compType == "No Compression" ? "Open" : "Decompress";
+
             switch (byte2)
             {
                 case 0x18:
@@ -94,14 +98,14 @@ namespace DiddyKongModdingView
             }
         }
 
-        public static byte[] decompressAsset(byte[] assetData, int assetIndex, string type)
+        public static byte[] decompressAsset(byte[] assetData, int assetIndex, string type,string compType)
         {
             int assetOffset = getAssetOffset(assetData, assetIndex) + 8;//the asset offset
             ushort assetCount = BitConverter.ToUInt16(assetData, 0);//the asset count is at the start of the file ?2305?
             uint assetSize = BitConverter.ToUInt32(assetData, 10 + assetCount * 2 + assetIndex * 8);//used to get asset size
             byte[] result = new byte[assetSize];//reate a byte array of the size of the asset
             Array.Copy(assetData, assetOffset, result, 0, assetSize);//copy the asset data into the result array
-            return FileDecompressor.LZ77_Decompress(result, type);
+            return FileDecompressor.Decompress_Handler(result, type,compType);
         }
 
         public static byte getAssetType(byte[] assetData, int assetOffset)

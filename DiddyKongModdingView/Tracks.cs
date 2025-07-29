@@ -24,15 +24,15 @@ namespace DiddyKongModdingView
             label1.Text = $"Track Files Found: {trackCount}";
         }
 
-        public static byte[] decompressTrack(byte[] assetData, int assetIndex)
-        {
-            int assetOffset = Assets.getAssetOffset(assetData, assetIndex) + 8;//the asset offset
-            ushort assetCount = BitConverter.ToUInt16(assetData, 0);//the asset count is at the start of the file ?2305?
-            uint assetSize = BitConverter.ToUInt32(assetData, 10 + assetCount * 2 + assetIndex * 8);//used to get asset size
-            byte[] result = new byte[assetSize];//reate a byte array of the size of the asset
-            Array.Copy(assetData, assetOffset, result, 0, assetSize);//copy the asset data into the result array
-            return FileDecompressor.LZ77_Decompress(result,"track");
-        }
+        //public static byte[] decompressTrack(byte[] assetData, int assetIndex,string compType)
+        //{
+        //    int assetOffset = Assets.getAssetOffset(assetData, assetIndex) + 8;//the asset offset
+        //    ushort assetCount = BitConverter.ToUInt16(assetData, 0);//the asset count is at the start of the file ?2305?
+        //    uint assetSize = BitConverter.ToUInt32(assetData, 10 + assetCount * 2 + assetIndex * 8);//used to get asset size
+        //    byte[] result = new byte[assetSize];//reate a byte array of the size of the asset
+        //    Array.Copy(assetData, assetOffset, result, 0, assetSize);//copy the asset data into the result array
+        //    return FileDecompressor.Decompress_Handler(result,"track",compType);
+        //}
 
         public static uint getTrackSections(byte[] trackData)
         {

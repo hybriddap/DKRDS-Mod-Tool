@@ -85,11 +85,25 @@ namespace DiddyKongModdingView
             button2 = new Button();
             TextureDataBtn = new Button();
             pictureBox1 = new PictureBox();
+            tableLayoutPanel4 = new TableLayoutPanel();
+            TextureRefTable = new TextBox();
+            TextureGroupModels = new TextBox();
+            ModelGroup = new TextBox();
+            NoOfTexturesModel = new TextBox();
+            NoOfModels = new TextBox();
+            UnknownVarFlags = new TextBox();
+            label22 = new Label();
+            label23 = new Label();
+            label24 = new Label();
+            label25 = new Label();
+            label26 = new Label();
+            label27 = new Label();
             tableLayoutPanel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             tableLayoutPanel2.SuspendLayout();
             tableLayoutPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            tableLayoutPanel4.SuspendLayout();
             SuspendLayout();
             // 
             // button1
@@ -659,24 +673,158 @@ namespace DiddyKongModdingView
             pictureBox1.TabStop = false;
             pictureBox1.Visible = false;
             // 
+            // tableLayoutPanel4
+            // 
+            tableLayoutPanel4.CellBorderStyle = TableLayoutPanelCellBorderStyle.InsetDouble;
+            tableLayoutPanel4.ColumnCount = 2;
+            tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            tableLayoutPanel4.Controls.Add(TextureRefTable, 1, 4);
+            tableLayoutPanel4.Controls.Add(TextureGroupModels, 1, 3);
+            tableLayoutPanel4.Controls.Add(ModelGroup, 1, 2);
+            tableLayoutPanel4.Controls.Add(NoOfTexturesModel, 1, 1);
+            tableLayoutPanel4.Controls.Add(NoOfModels, 1, 0);
+            tableLayoutPanel4.Controls.Add(UnknownVarFlags, 1, 5);
+            tableLayoutPanel4.Controls.Add(label22, 0, 0);
+            tableLayoutPanel4.Controls.Add(label23, 0, 1);
+            tableLayoutPanel4.Controls.Add(label24, 0, 2);
+            tableLayoutPanel4.Controls.Add(label25, 0, 3);
+            tableLayoutPanel4.Controls.Add(label26, 0, 5);
+            tableLayoutPanel4.Controls.Add(label27, 0, 4);
+            tableLayoutPanel4.Location = new Point(258, 84);
+            tableLayoutPanel4.Name = "tableLayoutPanel4";
+            tableLayoutPanel4.RowCount = 6;
+            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Percent, 47.55245F));
+            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Percent, 52.44755F));
+            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Absolute, 54F));
+            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Absolute, 65F));
+            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Absolute, 49F));
+            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Absolute, 42F));
+            tableLayoutPanel4.Size = new Size(283, 337);
+            tableLayoutPanel4.TabIndex = 29;
+            tableLayoutPanel4.Visible = false;
+            // 
+            // TextureRefTable
+            // 
+            TextureRefTable.Location = new Point(146, 242);
+            TextureRefTable.Name = "TextureRefTable";
+            TextureRefTable.ReadOnly = true;
+            TextureRefTable.Size = new Size(94, 23);
+            TextureRefTable.TabIndex = 17;
+            // 
+            // TextureGroupModels
+            // 
+            TextureGroupModels.Location = new Point(146, 174);
+            TextureGroupModels.Name = "TextureGroupModels";
+            TextureGroupModels.ReadOnly = true;
+            TextureGroupModels.Size = new Size(94, 23);
+            TextureGroupModels.TabIndex = 16;
+            // 
+            // ModelGroup
+            // 
+            ModelGroup.Location = new Point(146, 117);
+            ModelGroup.Name = "ModelGroup";
+            ModelGroup.ReadOnly = true;
+            ModelGroup.Size = new Size(94, 23);
+            ModelGroup.TabIndex = 11;
+            // 
+            // NoOfTexturesModel
+            // 
+            NoOfTexturesModel.Location = new Point(146, 59);
+            NoOfTexturesModel.Name = "NoOfTexturesModel";
+            NoOfTexturesModel.ReadOnly = true;
+            NoOfTexturesModel.Size = new Size(94, 23);
+            NoOfTexturesModel.TabIndex = 13;
+            // 
+            // NoOfModels
+            // 
+            NoOfModels.Location = new Point(146, 6);
+            NoOfModels.Name = "NoOfModels";
+            NoOfModels.ReadOnly = true;
+            NoOfModels.Size = new Size(94, 23);
+            NoOfModels.TabIndex = 12;
+            // 
+            // UnknownVarFlags
+            // 
+            UnknownVarFlags.Location = new Point(146, 294);
+            UnknownVarFlags.Name = "UnknownVarFlags";
+            UnknownVarFlags.ReadOnly = true;
+            UnknownVarFlags.Size = new Size(94, 23);
+            UnknownVarFlags.TabIndex = 19;
+            // 
+            // label22
+            // 
+            label22.AutoSize = true;
+            label22.Location = new Point(6, 3);
+            label22.Name = "label22";
+            label22.Size = new Size(110, 15);
+            label22.TabIndex = 18;
+            label22.Text = "Number of Models:";
+            // 
+            // label23
+            // 
+            label23.AutoSize = true;
+            label23.Location = new Point(6, 56);
+            label23.Name = "label23";
+            label23.Size = new Size(114, 15);
+            label23.TabIndex = 4;
+            label23.Text = "Number of Textures:";
+            // 
+            // label24
+            // 
+            label24.AutoSize = true;
+            label24.Location = new Point(6, 114);
+            label24.Name = "label24";
+            label24.Size = new Size(115, 15);
+            label24.TabIndex = 7;
+            label24.Text = "Model Group Offset:";
+            // 
+            // label25
+            // 
+            label25.AutoSize = true;
+            label25.Location = new Point(6, 171);
+            label25.Name = "label25";
+            label25.Size = new Size(119, 15);
+            label25.TabIndex = 6;
+            label25.Text = "Texture Group Offset:";
+            // 
+            // label26
+            // 
+            label26.AutoSize = true;
+            label26.Location = new Point(6, 291);
+            label26.Name = "label26";
+            label26.Size = new Size(102, 30);
+            label26.TabIndex = 15;
+            label26.Text = "Unknown Various Flags:";
+            // 
+            // label27
+            // 
+            label27.AutoSize = true;
+            label27.Location = new Point(6, 239);
+            label27.Name = "label27";
+            label27.Size = new Size(99, 30);
+            label27.TabIndex = 14;
+            label27.Text = "Texture Ref Table Offset:";
+            // 
             // BackBtn
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(784, 461);
+            Controls.Add(tableLayoutPanel4);
             Controls.Add(pictureBox1);
             Controls.Add(TextureDataBtn);
             Controls.Add(button2);
             Controls.Add(ViewTextureBtn);
             Controls.Add(label7);
             Controls.Add(flowLayoutPanel1);
-            Controls.Add(tableLayoutPanel1);
             Controls.Add(label1);
             Controls.Add(listBox1);
             Controls.Add(button1);
-            Controls.Add(tableLayoutPanel3);
             Controls.Add(tableLayoutPanel2);
             Controls.Add(DecompressButton);
+            Controls.Add(tableLayoutPanel1);
+            Controls.Add(tableLayoutPanel3);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Icon = Resources.DKRDS_icon_Diddy;
             MaximizeBox = false;
@@ -690,6 +838,8 @@ namespace DiddyKongModdingView
             tableLayoutPanel3.ResumeLayout(false);
             tableLayoutPanel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            tableLayoutPanel4.ResumeLayout(false);
+            tableLayoutPanel4.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -750,5 +900,18 @@ namespace DiddyKongModdingView
         private Button button2;
         private Button TextureDataBtn;
         private PictureBox pictureBox1;
+        private TableLayoutPanel tableLayoutPanel4;
+        private TextBox TextureRefTable;
+        private TextBox TextureGroupModels;
+        private TextBox ModelGroup;
+        private TextBox NoOfTexturesModel;
+        private TextBox NoOfModels;
+        private TextBox UnknownVarFlags;
+        private Label label22;
+        private Label label23;
+        private Label label24;
+        private Label label25;
+        private Label label26;
+        private Label label27;
     }
 }
