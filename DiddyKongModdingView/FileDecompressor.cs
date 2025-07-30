@@ -107,7 +107,7 @@ namespace DiddyKongModdingView
 
             if (compressionType == "No Compression")
             {
-                File.WriteAllBytes(outputFile, data);
+                //File.WriteAllBytes(outputFile, data);
                 output = data;
             }
             else if (compressionType == "Huffman")
@@ -124,7 +124,7 @@ namespace DiddyKongModdingView
             else if (compressionType == "LZ77")
             {
                 output = LZ77(data);
-                File.WriteAllBytes(outputFile, output);
+                //File.WriteAllBytes(outputFile, output);
                 MessageBox.Show($"{assetType} file decompression complete.");
             }
             else

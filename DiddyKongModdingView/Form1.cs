@@ -1,6 +1,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace DiddyKongModdingView
 {
@@ -9,10 +10,39 @@ namespace DiddyKongModdingView
 
         private byte[] fileData;
         private byte[] trackData;
+        private int selectedAssetIndex = 0;
 
         public BackBtn()
         {
             InitializeComponent();
+            this.KeyPreview = true;
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
+        }
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.X &&(button2.Visible&&button2.Enabled))
+            {
+                button2.PerformClick();  // or call SaveLogic();
+                e.Handled = true;
+            }
+
+            if (e.KeyCode == Keys.C && (ViewTextureBtn.Visible && ViewTextureBtn.Enabled))
+            {
+                ViewTextureBtn.PerformClick();  // or call SaveLogic();
+                e.Handled = true;
+            }
+            else if (e.KeyCode == Keys.C && (DecompressButton.Visible && DecompressButton.Enabled))
+            {
+                DecompressButton.PerformClick();  // or call SaveLogic();
+                e.Handled = true;
+            }
+            else if (e.KeyCode == Keys.C && (TextureDataBtn.Visible && TextureDataBtn.Enabled))
+            {
+                TextureDataBtn.PerformClick();  // or call SaveLogic();
+                e.Handled = true;
+            }
+
         }
 
         private void OpenFileAndReadBytes()
@@ -47,15 +77,19 @@ namespace DiddyKongModdingView
 
         private void listBox1_SelectedIndexChanged(object sender, System.EventArgs e)
         {
-            int assetIndex = Int32.Parse(listBox1.SelectedItem.ToString().Split()[1]) - 1;
-            int assetOffset = Assets.getAssetOffset(fileData, assetIndex);
-            AssetID.Text = Assets.getAssetID(fileData, assetIndex).ToString();
-            AssetType.Text = Assets.getAssetStringType(fileData, assetOffset, DecompressButton);
-            AssetOffset.Text = $"{assetOffset.ToString()} Decimal";
-            AssetSize.Text = $"{Assets.getAssetSize(fileData, assetIndex).ToString()}";
-            CompressionType.Text = $"{Assets.getAssetCompressionType(fileData, assetOffset)}";
-            UncompressedSize.Text = $"{Assets.getAssetUncompressedSize(fileData, assetOffset).ToString()}";
-            UnknownFlags.Text = $"{Assets.getUnknownAssetFlags(fileData, assetOffset)}";
+            if (tableLayoutPanel1.Visible)
+            {
+                int assetIndex = Int32.Parse(listBox1.SelectedItem.ToString().Split()[1]) - 1;
+                int assetOffset = Assets.getAssetOffset(fileData, assetIndex);
+                AssetID.Text = Assets.getAssetID(fileData, assetIndex).ToString();
+                AssetType.Text = Assets.getAssetStringType(fileData, assetOffset, DecompressButton);
+                AssetOffset.Text = $"{assetOffset.ToString()} Decimal";
+                AssetSize.Text = $"{Assets.getAssetSize(fileData, assetIndex).ToString()}";
+                CompressionType.Text = $"{Assets.getAssetCompressionType(fileData, assetOffset)}";
+                UncompressedSize.Text = $"{Assets.getAssetUncompressedSize(fileData, assetOffset).ToString()}";
+                UnknownFlags.Text = $"{Assets.getUnknownAssetFlags(fileData, assetOffset)}";
+                return;
+            }
 
             goBackFunction();
 
@@ -199,6 +233,8 @@ namespace DiddyKongModdingView
             byte[] data=Assets.decompressAsset(fileData, assetIndex, assetType,compType);
             trackData = data;
 
+            selectedAssetIndex = listBox1.SelectedIndex;
+
             button2.Enabled = true;
             DecompressButton.Enabled = false;
             DecompressButton.Visible = false;
@@ -258,6 +294,7 @@ namespace DiddyKongModdingView
 
             button2.Enabled = false;
             DecompressButton.Visible = true;
+            DecompressButton.Enabled = false;
             TextureDataBtn.Visible = false;
             ViewTextureBtn.Visible = false;
 
@@ -275,13 +312,18 @@ namespace DiddyKongModdingView
                 Assets.populateAssets(fileData, listBox1, label1);
             else if (ModelsBtn.Enabled == false)
                 Models.populateModels(fileData, listBox1, label1);
+            
+            if (selectedAssetIndex >= 0 && selectedAssetIndex < listBox1.Items.Count)
+            {
+                listBox1.SetSelected(selectedAssetIndex, true);
+            }
         }
 
         private void showTrackData(byte[] trackData)
         {
             int assetIndex = Int32.Parse(listBox1.SelectedItem.ToString().Split()[1]) - 1;
             int assetID = Assets.getAssetID(fileData, assetIndex);
-            TrackName.Text = assetID == 534 ? "Ancient Lake" : assetID.ToString();
+            TrackName.Text =Tracks.getTrackName(assetID);
             NumberOfSections.Text = $"{Tracks.getTrackSections(trackData).ToString()} Sections";
             TrackSectionGroupOffset.Text = $"{Tracks.getTrackSectionGroupOffset(trackData).ToString()} Decimal";
             NumberOfTextures.Text = $"{Tracks.getTrackNoTextures(trackData).ToString()} Textures";
@@ -323,7 +365,9 @@ namespace DiddyKongModdingView
             tableLayoutPanel3.Visible = true;
             tableLayoutPanel4.Visible = false;
             TextureDataBtn.Visible = false;
-            ViewTextureBtn.Visible = true;
+            ViewTextureBtn.Visible = false;
+
+            selectedAssetIndex = listBox1.SelectedIndex;
             if (isModelFile)
                 showTextureData(trackData, "Model");
             else

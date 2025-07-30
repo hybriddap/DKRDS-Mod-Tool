@@ -1,7 +1,10 @@
-﻿using System;
+﻿using DiddyKongModdingView.Properties;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -33,6 +36,31 @@ namespace DiddyKongModdingView
         //    Array.Copy(assetData, assetOffset, result, 0, assetSize);//copy the asset data into the result array
         //    return FileDecompressor.Decompress_Handler(result,"track",compType);
         //}
+
+        public static string getTrackName(int assetID)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            string resourceName = "DiddyKongModdingView.data.json";
+            using Stream stream = assembly.GetManifestResourceStream(resourceName);
+            if (stream == null)
+            {
+                Console.WriteLine("Embedded resource not found.");
+                return assetID.ToString();
+            }
+            using StreamReader reader = new StreamReader(stream);
+            string json = reader.ReadToEnd();
+
+
+
+            var data = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(json);
+            string hexValue = $"0x{assetID.ToString("X4")}"; // Convert assetID to hex format
+            if (data.TryGetValue("trackNames", out var trackNames) &&
+            trackNames.TryGetValue(hexValue, out var trackName))
+            {
+                return trackName;
+            }
+            return assetID.ToString();
+        }
 
         public static uint getTrackSections(byte[] trackData)
         {

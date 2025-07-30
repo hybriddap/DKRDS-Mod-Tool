@@ -16,7 +16,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="data.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="DKRDS_icon_Diddy.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="data.json" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,17 +12,19 @@ namespace DiddyKongModdingView
 {
     internal class TextureViewer : Form
     {
-        public TextureViewer(byte[] textureData, byte[] paletteData, int width, int height,int type)
+        private Bitmap bmp;
+        public TextureViewer(byte[] textureData, byte[] paletteData, int width, int height, int type)
         {
+            InitializeComponent();
             // Decode texture into Bitmap
-            Bitmap bitmap = GetTexture(textureData,paletteData,width,height,type);
-
+            Bitmap bitmap = GetTexture(textureData, paletteData, width, height, type);
+            bmp = bitmap;
             // Set up PictureBox
             PictureBox pictureBox = new PictureBox
             {
                 Image = bitmap,
                 SizeMode = PictureBoxSizeMode.Zoom,
-                Dock = DockStyle.Fill
+                Dock = DockStyle.Fill,
             };
 
             this.Controls.Add(pictureBox);
@@ -246,6 +249,30 @@ namespace DiddyKongModdingView
             return bmp;
         }
 
+        private void InitializeComponent()
+        {
+            saveImage = new Button();
+            SuspendLayout();
+            // 
+            // saveImage
+            // 
+            saveImage.Dock = DockStyle.Top;
+            saveImage.Location = new Point(0, 0);
+            saveImage.Name = "saveImage";
+            saveImage.Size = new Size(284, 23);
+            saveImage.TabIndex = 0;
+            saveImage.Text = "Export Image";
+            saveImage.UseVisualStyleBackColor = true;
+            saveImage.Click += saveImage_Click;
+            // 
+            // TextureViewer
+            // 
+            ClientSize = new Size(284, 261);
+            Controls.Add(saveImage);
+            Name = "TextureViewer";
+            ResumeLayout(false);
+
+        }
 
         private static Bitmap DecodeIndexedTextureRGB555(byte[] texture, byte[] palette, int width, int height)
         {
@@ -276,5 +303,33 @@ namespace DiddyKongModdingView
 
             return bmp;
         }
+
+        private void saveImage_Click(object sender, EventArgs e)
+        {
+            using (SaveFileDialog saveDialog = new SaveFileDialog())
+            {
+                saveDialog.Title = "Save Image As";
+                saveDialog.Filter = "PNG Image|*.png|JPEG Image|*.jpg|Bitmap Image|*.bmp";
+                saveDialog.DefaultExt = "png";
+                saveDialog.AddExtension = true;
+                saveDialog.FileName = "image";
+
+                if (saveDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = saveDialog.FileName;
+                    string ext = Path.GetExtension(filePath).ToLower();
+
+                    // Choose format based on extension
+                    ImageFormat format = ImageFormat.Png;
+                    if (ext == ".jpg") format = ImageFormat.Jpeg;
+                    else if (ext == ".bmp") format = ImageFormat.Bmp;
+
+                    bmp.Save(filePath, format);
+                    MessageBox.Show("Image saved to:\n" + filePath);
+                }
+            }
+        }
+
+        private Button saveImage;
     }
 }
