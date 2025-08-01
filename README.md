@@ -5,9 +5,11 @@ An open-source modding tool for **Diddy Kong Racing DS**.
 
 Currently, it supports:
 - Viewing basic asset data
-- Viewing basic track data
+- Viewing basic track data & track textures
+- Viewing most model data & model textures
+- Viewing basic texture data & textures
 - Decompression of Model Files
-- Viewing track & raw textures
+- Exporting textures as png files
 
 I will implement further functionality throughout development.
 
