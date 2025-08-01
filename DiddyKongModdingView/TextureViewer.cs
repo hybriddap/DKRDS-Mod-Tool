@@ -40,7 +40,7 @@ namespace DiddyKongModdingView
             switch (type)
             {
                 case 0: //unknown
-                    MessageBox.Show("Unknown Type");
+                    //MessageBox.Show("Unknown Type");
                     break;
                 case 1: //A3I5
                     bitmap = DecodeA3I5IndexedTexture(textureData, paletteData, width, height);
@@ -55,7 +55,7 @@ namespace DiddyKongModdingView
                     bitmap = DecodeIndexedTextureRGB555(textureData, paletteData, width, height);
                     break;
                 case 5: //4x4 texel compressed (unused?)
-                    MessageBox.Show("Not Implemented");
+                    //MessageBox.Show("Not Implemented");
                     break;
                 case 6: //A5I3
                     bitmap = DecodeA5I3IndexedTexture(textureData, paletteData, width, height);
@@ -64,7 +64,7 @@ namespace DiddyKongModdingView
                     bitmap = DecodeRGB5551Texture(textureData, width, height);
                     break;
                 default:
-                    MessageBox.Show("Not Implemented");
+                    //MessageBox.Show("Not Implemented");
                     break;
             }
             return bitmap;
