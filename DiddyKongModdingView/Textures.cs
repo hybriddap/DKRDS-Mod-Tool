@@ -111,6 +111,29 @@ namespace DiddyKongModdingView
 
         }
 
+        public static void changeTexture(byte[] trackData, int textureIndex, byte[] newTextureData)
+        {
+            try
+            {
+                //for texture
+                int offset = getTextureOffset(trackData, textureIndex);
+                int width = BitConverter.ToInt16(trackData, offset + 16);
+                int height = BitConverter.ToInt16(trackData, offset + 18);
+                int size = BitConverter.ToInt16(trackData, offset + 14) * 0x10;
+
+                int format = BitConverter.ToInt16(trackData, offset + 8);
+
+                //update data
+                Array.Copy(newTextureData, 0, trackData, offset + 20, size);
+                return;
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
+
+        }
+
         //public static void populateTextures(byte[] trackData, ListBox listBox1, Label label1, String trackName)
         //{
         //    if (trackData == null)

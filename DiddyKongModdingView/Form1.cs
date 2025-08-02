@@ -11,6 +11,7 @@ namespace DiddyKongModdingView
         private byte[] fileData;
         private byte[] trackData;
         private int selectedAssetIndex = 0;
+        private int selectedAssetID = 0;
 
         public BackBtn()
         {
@@ -21,7 +22,7 @@ namespace DiddyKongModdingView
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.X &&(button2.Visible&&button2.Enabled))
+            if (e.KeyCode == Keys.X && (button2.Visible && button2.Enabled))
             {
                 button2.PerformClick();  // or call SaveLogic();
                 e.Handled = true;
@@ -104,11 +105,14 @@ namespace DiddyKongModdingView
                 TextureDimensions.Text = Textures.getTextureDimensions(trackData, textureIndex);
                 PaletteSize.Text = $"{Textures.getPaletteSize(trackData, Textures.getPaletteUID(trackData, textureIndex))}";
                 ViewTextureBtn.Visible = true;
+                saveFileBtn.Visible = true;
 
                 //Set preview image
                 Bitmap prevImg = Textures.showPreview(trackData, textureIndex, Textures.getPaletteUID(trackData, textureIndex));
                 pictureBox1.Image = prevImg;
                 pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+
+                changeTextureBtn.Visible = true;
             }
         }
 
@@ -127,9 +131,11 @@ namespace DiddyKongModdingView
 
             pictureBox1.Image = null; // Clear previous image
             pictureBox1.Visible = false;
+            changeTextureBtn.Visible = false;
 
 
             ViewTextureBtn.Visible = false;
+            saveFileBtn.Visible = false;
 
             listBox1.Items.Clear();
             Assets.populateAssets(fileData, listBox1, label1);
@@ -155,8 +161,10 @@ namespace DiddyKongModdingView
 
             pictureBox1.Image = null; // Clear previous image
             pictureBox1.Visible = false;
+            changeTextureBtn.Visible = false;
 
             ViewTextureBtn.Visible = false;
+            saveFileBtn.Visible = false;
 
             listBox1.Items.Clear();
             Tracks.populateTracks(fileData, listBox1, label1);
@@ -183,8 +191,10 @@ namespace DiddyKongModdingView
 
             pictureBox1.Image = null; // Clear previous image
             pictureBox1.Visible = false;
+            changeTextureBtn.Visible = false;
 
             ViewTextureBtn.Visible = false;
+            saveFileBtn.Visible = false;
 
             listBox1.Items.Clear();
             Textures.populateTextures(fileData, listBox1, label1);
@@ -212,8 +222,10 @@ namespace DiddyKongModdingView
 
             pictureBox1.Image = null; // Clear previous image
             pictureBox1.Visible = false;
+            changeTextureBtn.Visible = false;
 
             ViewTextureBtn.Visible = false;
+            saveFileBtn.Visible = false;
 
             listBox1.Items.Clear();
             Models.populateModels(fileData, listBox1, label1);
@@ -230,10 +242,11 @@ namespace DiddyKongModdingView
             int assetOffset = Assets.getAssetOffset(fileData, assetIndex);
             string compType = Assets.getAssetCompressionType(fileData, assetOffset);
             string assetType = Assets.getAssetStringType(fileData, assetOffset, DecompressButton);
-            byte[] data=Assets.decompressAsset(fileData, assetIndex, assetType,compType);
+            byte[] data = Assets.decompressAsset(fileData, assetIndex, assetType, compType);
             trackData = data;
 
             selectedAssetIndex = listBox1.SelectedIndex;
+            selectedAssetID = assetIndex;
 
             button2.Enabled = true;
             DecompressButton.Enabled = false;
@@ -255,6 +268,7 @@ namespace DiddyKongModdingView
                     tableLayoutPanel3.Visible = true;
                     tableLayoutPanel4.Visible = false;
                     ViewTextureBtn.Visible = false;
+                    saveFileBtn.Visible = false;
                     showTextureData(data);
                     pictureBox1.Image = null; // Clear previous image
                     pictureBox1.Visible = true;
@@ -284,19 +298,21 @@ namespace DiddyKongModdingView
             Textures.showImage(trackData, textureIndex, Textures.getPaletteUID(trackData, textureIndex));
         }
 
-        private void goBackFunction(bool fromBtn=false)
+        private void goBackFunction(bool fromBtn = false)
         {
             if (tableLayoutPanel1.Visible || tableLayoutPanel3.Visible && !fromBtn)
                 return;
 
             pictureBox1.Image = null; // Clear previous image
             pictureBox1.Visible = false;
+            changeTextureBtn.Visible = false;
 
             button2.Enabled = false;
             DecompressButton.Visible = true;
             DecompressButton.Enabled = false;
             TextureDataBtn.Visible = false;
             ViewTextureBtn.Visible = false;
+            saveFileBtn.Visible = false;
 
             tableLayoutPanel1.Visible = true;
             tableLayoutPanel2.Visible = false;
@@ -312,7 +328,7 @@ namespace DiddyKongModdingView
                 Assets.populateAssets(fileData, listBox1, label1);
             else if (ModelsBtn.Enabled == false)
                 Models.populateModels(fileData, listBox1, label1);
-            
+
             if (selectedAssetIndex >= 0 && selectedAssetIndex < listBox1.Items.Count)
             {
                 listBox1.SetSelected(selectedAssetIndex, true);
@@ -323,7 +339,7 @@ namespace DiddyKongModdingView
         {
             int assetIndex = Int32.Parse(listBox1.SelectedItem.ToString().Split()[1]) - 1;
             int assetID = Assets.getAssetID(fileData, assetIndex);
-            TrackName.Text =Tracks.getTrackName(assetID);
+            TrackName.Text = Tracks.getTrackName(assetID);
             NumberOfSections.Text = $"{Tracks.getTrackSections(trackData).ToString()} Sections";
             TrackSectionGroupOffset.Text = $"{Tracks.getTrackSectionGroupOffset(trackData).ToString()} Decimal";
             NumberOfTextures.Text = $"{Tracks.getTrackNoTextures(trackData).ToString()} Textures";
@@ -343,7 +359,7 @@ namespace DiddyKongModdingView
             UnknownVarFlags.Text = $"{Models.getUnknownVarious(modelData).ToString()}";
         }
 
-        private void showTextureData(byte[] textureData, string name="Texture")
+        private void showTextureData(byte[] textureData, string name = "Texture")
         {
             listBox1.Items.Clear();
             Textures.getAllTextures(textureData, listBox1, label1, name);
@@ -366,12 +382,40 @@ namespace DiddyKongModdingView
             tableLayoutPanel4.Visible = false;
             TextureDataBtn.Visible = false;
             ViewTextureBtn.Visible = false;
+            saveFileBtn.Visible = false;
 
             selectedAssetIndex = listBox1.SelectedIndex;
             if (isModelFile)
                 showTextureData(trackData, "Model");
             else
-                showTextureData(trackData,TrackName.Text);
+                showTextureData(trackData, TrackName.Text);
+        }
+
+        private void changeTextureBtn_Click(object sender, EventArgs e)
+        {
+            int textureIndex = listBox1.SelectedIndex;
+
+            // Create a new texture data array with 32x32 pixels
+            byte[] textureData = new byte[32 * 32];
+            // Fill each row with increasing color indices (0 to 31), repeated
+            for (int y = 0; y < 32; y++)
+            {
+                for (int x = 0; x < 32; x++)
+                {
+                    textureData[y * 32 + x] = (byte)((x + y) % 256);
+                }
+            }
+
+            Textures.changeTexture(trackData, textureIndex, textureData);
+        }
+
+        private void saveFileBtn_Click(object sender, EventArgs e)
+        {
+            int assetIndex = selectedAssetID;
+            int assetOffset = Assets.getAssetOffset(fileData, assetIndex);
+            string compType = Assets.getAssetCompressionType(fileData, assetOffset);
+            string assetType = Assets.getAssetStringType(fileData, assetOffset, DecompressButton);
+            Assets.recompressAsset(fileData, assetIndex, assetType, compType);
         }
     }
 }

@@ -9,6 +9,8 @@ namespace DiddyKongModdingView
 {
     internal class Assets
     {
+        private static byte[] decompressedData;
+
         public static void populateAssets(byte[] assetData, ListBox listBox1, Label label1)
         {
             ushort assetCount = BitConverter.ToUInt16(assetData, 0);
@@ -105,7 +107,19 @@ namespace DiddyKongModdingView
             uint assetSize = BitConverter.ToUInt32(assetData, 10 + assetCount * 2 + assetIndex * 8);//used to get asset size
             byte[] result = new byte[assetSize];//reate a byte array of the size of the asset
             Array.Copy(assetData, assetOffset, result, 0, assetSize);//copy the asset data into the result array
-            return FileDecompressor.Decompress_Handler(result, type,compType);
+            byte[] payload = FileDecompressor.Decompress_Handler(result, type, compType);
+            decompressedData = payload;
+            return payload; // Return the decompressed data
+        }
+
+        public static byte[] recompressAsset(byte[] assetData, int assetIndex, string type, string compType)
+        {
+            byte[] newCompressedData = FileDecompressor.Compress_Handler(decompressedData, type, compType);
+            //return newCompressedFile;
+            byte [] newDecompressed = FileDecompressor.Decompress_Handler(newCompressedData, type, compType);
+            bool match = decompressedData.SequenceEqual(newDecompressed);
+            MessageBox.Show(match ? "Recompression successful!" : "Recompression failed! Data mismatch.");
+            return newCompressedData; // Return the recompressed data
         }
 
         public static byte getAssetType(byte[] assetData, int assetOffset)

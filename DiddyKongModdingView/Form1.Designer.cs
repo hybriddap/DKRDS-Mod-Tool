@@ -98,6 +98,8 @@ namespace DiddyKongModdingView
             label25 = new Label();
             label26 = new Label();
             label27 = new Label();
+            changeTextureBtn = new Button();
+            saveFileBtn = new Button();
             tableLayoutPanel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             tableLayoutPanel2.SuspendLayout();
@@ -806,11 +808,35 @@ namespace DiddyKongModdingView
             label27.TabIndex = 14;
             label27.Text = "Texture Ref Table Offset:";
             // 
+            // changeTextureBtn
+            // 
+            changeTextureBtn.Location = new Point(605, 315);
+            changeTextureBtn.Name = "changeTextureBtn";
+            changeTextureBtn.Size = new Size(106, 23);
+            changeTextureBtn.TabIndex = 30;
+            changeTextureBtn.Text = "Change Texture";
+            changeTextureBtn.UseVisualStyleBackColor = true;
+            changeTextureBtn.Visible = false;
+            changeTextureBtn.Click += changeTextureBtn_Click;
+            // 
+            // saveFileBtn
+            // 
+            saveFileBtn.Location = new Point(483, 427);
+            saveFileBtn.Name = "saveFileBtn";
+            saveFileBtn.Size = new Size(58, 23);
+            saveFileBtn.TabIndex = 31;
+            saveFileBtn.Text = "Save";
+            saveFileBtn.UseVisualStyleBackColor = true;
+            saveFileBtn.Visible = false;
+            saveFileBtn.Click += saveFileBtn_Click;
+            // 
             // BackBtn
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(784, 461);
+            Controls.Add(saveFileBtn);
+            Controls.Add(changeTextureBtn);
             Controls.Add(tableLayoutPanel4);
             Controls.Add(pictureBox1);
             Controls.Add(TextureDataBtn);
@@ -913,5 +939,7 @@ namespace DiddyKongModdingView
         private Label label25;
         private Label label26;
         private Label label27;
+        private Button changeTextureBtn;
+        private Button saveFileBtn;
     }
 }
