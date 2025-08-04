@@ -407,6 +407,10 @@ namespace DiddyKongModdingView
             }
 
             Textures.changeTexture(trackData, textureIndex, textureData);
+            //Set preview image
+            Bitmap prevImg = Textures.showPreview(trackData, textureIndex, Textures.getPaletteUID(trackData, textureIndex));
+            pictureBox1.Image = prevImg;
+            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
         }
 
         private void saveFileBtn_Click(object sender, EventArgs e)
@@ -415,7 +419,9 @@ namespace DiddyKongModdingView
             int assetOffset = Assets.getAssetOffset(fileData, assetIndex);
             string compType = Assets.getAssetCompressionType(fileData, assetOffset);
             string assetType = Assets.getAssetStringType(fileData, assetOffset, DecompressButton);
-            Assets.recompressAsset(fileData, assetIndex, assetType, compType);
+            byte[] newData = Assets.recompressAsset(trackData, assetIndex, assetType, compType);
+            byte[] modifiedData = Assets.replaceAssetData(fileData, assetIndex, assetType, compType, newData);
+            fileData = modifiedData; // Update the fileData with the modified data
         }
     }
 }
