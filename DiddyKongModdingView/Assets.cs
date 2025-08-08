@@ -176,7 +176,7 @@ namespace DiddyKongModdingView
             //return newCompressedFile;
             byte [] newDecompressed = FileDecompressor.Decompress_Handler(newCompressedData, type, compType);
             bool match = decompressedData.SequenceEqual(newDecompressed);
-            MessageBox.Show(match ? "Recompression successful!" : "Recompression failed! Data mismatch.");
+            MessageBox.Show(match ? "Recompression successful, files match!" : "Recompression failed! Data mismatch.");
             return newCompressedData; // Return the recompressed data
         }
 

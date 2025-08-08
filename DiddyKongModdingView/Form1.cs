@@ -113,6 +113,7 @@ namespace DiddyKongModdingView
                 pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
 
                 changeTextureBtn.Visible = true;
+                changePaletteBtn.Visible = true;
             }
         }
 
@@ -132,6 +133,7 @@ namespace DiddyKongModdingView
             pictureBox1.Image = null; // Clear previous image
             pictureBox1.Visible = false;
             changeTextureBtn.Visible = false;
+            changePaletteBtn.Visible = false;
 
 
             ViewTextureBtn.Visible = false;
@@ -162,6 +164,7 @@ namespace DiddyKongModdingView
             pictureBox1.Image = null; // Clear previous image
             pictureBox1.Visible = false;
             changeTextureBtn.Visible = false;
+            changePaletteBtn.Visible = false;
 
             ViewTextureBtn.Visible = false;
             saveFileBtn.Visible = false;
@@ -192,6 +195,7 @@ namespace DiddyKongModdingView
             pictureBox1.Image = null; // Clear previous image
             pictureBox1.Visible = false;
             changeTextureBtn.Visible = false;
+            changePaletteBtn.Visible = false;
 
             ViewTextureBtn.Visible = false;
             saveFileBtn.Visible = false;
@@ -223,6 +227,7 @@ namespace DiddyKongModdingView
             pictureBox1.Image = null; // Clear previous image
             pictureBox1.Visible = false;
             changeTextureBtn.Visible = false;
+            changePaletteBtn.Visible = false;
 
             ViewTextureBtn.Visible = false;
             saveFileBtn.Visible = false;
@@ -306,6 +311,7 @@ namespace DiddyKongModdingView
             pictureBox1.Image = null; // Clear previous image
             pictureBox1.Visible = false;
             changeTextureBtn.Visible = false;
+            changePaletteBtn.Visible = false;
 
             button2.Enabled = false;
             DecompressButton.Visible = true;
@@ -395,20 +401,53 @@ namespace DiddyKongModdingView
         {
             int textureIndex = listBox1.SelectedIndex;
 
-            // Create a new texture data array with 32x32 pixels
-            byte[] textureData = new byte[32 * 32];
-            // Fill each row with increasing color indices (0 to 31), repeated
-            for (int y = 0; y < 32; y++)
+            byte[] textureData = null;
+
+            using (OpenFileDialog ofd = new OpenFileDialog())
             {
-                for (int x = 0; x < 32; x++)
+                if (ofd.ShowDialog() == DialogResult.OK)
                 {
-                    textureData[y * 32 + x] = (byte)((x + y) % 256);
+                    string path = ofd.FileName;
+                    textureData = TexturePaletteExtractor.texture_Returner(path,trackData,textureIndex);
                 }
+            }
+            if (textureData == null || textureData.Length == 0)
+            {
+                MessageBox.Show("No texture data selected or invalid file format/size.");
+                return;
             }
 
             Textures.changeTexture(trackData, textureIndex, textureData);
             //Set preview image
             Bitmap prevImg = Textures.showPreview(trackData, textureIndex, Textures.getPaletteUID(trackData, textureIndex));
+            pictureBox1.Image = prevImg;
+            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+        }
+
+        private void changePaletteBtn_Click(object sender, EventArgs e)
+        {
+            int textureIndex = listBox1.SelectedIndex;
+            uint paletteUID = Textures.getPaletteUID(trackData, textureIndex);
+
+            byte[] paletteData = null;
+
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    string path = ofd.FileName;
+                    paletteData = TexturePaletteExtractor.palette_Returner(path,trackData,paletteUID);
+                }
+            }
+            if (paletteData == null || paletteData.Length == 0)
+            {
+                MessageBox.Show("No palette data selected or invalid file format.");
+                return;
+            }
+
+            Textures.changePalette(trackData, paletteUID, paletteData);
+            //Set preview image
+            Bitmap prevImg = Textures.showPreview(trackData, textureIndex, paletteUID);
             pictureBox1.Image = prevImg;
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
         }

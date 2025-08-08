@@ -100,6 +100,7 @@ namespace DiddyKongModdingView
             label27 = new Label();
             changeTextureBtn = new Button();
             saveFileBtn = new Button();
+            changePaletteBtn = new Button();
             tableLayoutPanel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             tableLayoutPanel2.SuspendLayout();
@@ -830,11 +831,23 @@ namespace DiddyKongModdingView
             saveFileBtn.Visible = false;
             saveFileBtn.Click += saveFileBtn_Click;
             // 
+            // changePaletteBtn
+            // 
+            changePaletteBtn.Location = new Point(605, 344);
+            changePaletteBtn.Name = "changePaletteBtn";
+            changePaletteBtn.Size = new Size(106, 23);
+            changePaletteBtn.TabIndex = 32;
+            changePaletteBtn.Text = "Change Palette";
+            changePaletteBtn.UseVisualStyleBackColor = true;
+            changePaletteBtn.Visible = false;
+            changePaletteBtn.Click += changePaletteBtn_Click;
+            // 
             // BackBtn
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(784, 461);
+            Controls.Add(changePaletteBtn);
             Controls.Add(saveFileBtn);
             Controls.Add(changeTextureBtn);
             Controls.Add(tableLayoutPanel4);
@@ -941,5 +954,6 @@ namespace DiddyKongModdingView
         private Label label27;
         private Button changeTextureBtn;
         private Button saveFileBtn;
+        private Button changePaletteBtn;
     }
 }

@@ -133,6 +133,24 @@ namespace DiddyKongModdingView
             }
 
         }
+        public static void changePalette(byte[] trackData, uint paletteUID, byte[] newPaletteData)
+        {
+            try
+            {
+                //for palette
+                int offset = getPaletteOffset(trackData, paletteUID);
+                int size = BitConverter.ToInt16(trackData, offset + 4);
+
+                //update data
+                Array.Copy(newPaletteData, 0, trackData, offset + 8, size);
+                return;
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
+
+        }
 
         //public static void populateTextures(byte[] trackData, ListBox listBox1, Label label1, String trackName)
         //{
