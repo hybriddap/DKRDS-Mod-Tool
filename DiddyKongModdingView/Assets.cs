@@ -119,8 +119,6 @@ namespace DiddyKongModdingView
                 //MessageBox.Show($"Replacing offsets for asset index {i + 1} with size difference {sizeDifference} bytes. With newOffset{newOffset} and old one {assetOffset}");
                 Array.Copy(offsetBytes, 0, modifiedFile, assetOffsetOffset, 4);
             }
-            string outputFile = $"assets_modded.bin";
-            File.WriteAllBytes(outputFile, modifiedFile);
             return modifiedFile; // Return the modified file with updated offsets
         }
 

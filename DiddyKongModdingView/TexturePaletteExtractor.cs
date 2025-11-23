@@ -192,6 +192,7 @@ namespace DiddyKongModdingView
 
             if (data.Length != size)
             {
+                MessageBox.Show("Size error!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
             }
 

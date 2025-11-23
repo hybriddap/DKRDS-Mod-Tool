@@ -101,6 +101,7 @@ namespace DiddyKongModdingView
             changeTextureBtn = new Button();
             saveFileBtn = new Button();
             changePaletteBtn = new Button();
+            saveAssetsBinBtn = new Button();
             tableLayoutPanel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             tableLayoutPanel2.SuspendLayout();
@@ -842,11 +843,23 @@ namespace DiddyKongModdingView
             changePaletteBtn.Visible = false;
             changePaletteBtn.Click += changePaletteBtn_Click;
             // 
+            // saveAssetsBinBtn
+            // 
+            saveAssetsBinBtn.Enabled = false;
+            saveAssetsBinBtn.Location = new Point(618, 398);
+            saveAssetsBinBtn.Name = "saveAssetsBinBtn";
+            saveAssetsBinBtn.Size = new Size(154, 23);
+            saveAssetsBinBtn.TabIndex = 33;
+            saveAssetsBinBtn.Text = "Save assets.bin";
+            saveAssetsBinBtn.UseVisualStyleBackColor = true;
+            saveAssetsBinBtn.Click += saveAssetsBinBtn_Click;
+            // 
             // BackBtn
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(784, 461);
+            Controls.Add(saveAssetsBinBtn);
             Controls.Add(changePaletteBtn);
             Controls.Add(saveFileBtn);
             Controls.Add(changeTextureBtn);
@@ -955,5 +968,6 @@ namespace DiddyKongModdingView
         private Button changeTextureBtn;
         private Button saveFileBtn;
         private Button changePaletteBtn;
+        private Button saveAssetsBinBtn;
     }
 }

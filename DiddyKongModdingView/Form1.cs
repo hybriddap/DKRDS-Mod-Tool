@@ -53,20 +53,35 @@ namespace DiddyKongModdingView
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
                     string path = ofd.FileName;
+                    string extension = Path.GetExtension(path);
 
-                    fileData = File.ReadAllBytes(path);
+                    if (extension == ".bin")   //if its a bin file only!
+                    {
+                        fileData = File.ReadAllBytes(path);
 
-                    ushort assetCount = BitConverter.ToUInt16(fileData, 0);
+                        ushort assetCount = BitConverter.ToUInt16(fileData, 0);
+                        if (assetCount < 3000 && assetCount > 2000)  //sanity check its the right file. Note if later update allows users to add or remove assets, if they exceed this range the file wont be opened.
+                        {
+                            //MessageBox.Show($"File Successfully Read.");
+                            label1.Text = $"Assets Found: {assetCount}";
 
-                    MessageBox.Show($"File Successfully Read.");
-                    label1.Text = $"Assets Found: {assetCount}";
+                            Assets.populateAssets(fileData, listBox1, label1);
 
-                    Assets.populateAssets(fileData, listBox1, label1);
-
-                    TracksBtn.Enabled = true;
-                    TexturesBtn.Enabled = true;
-                    ModelsBtn.Enabled = true;
+                            TracksBtn.Enabled = true;
+                            TexturesBtn.Enabled = true;
+                            ModelsBtn.Enabled = true;
+                        }
+                        else
+                        {
+                            fileData = null;
+                        }
+                    }
                 }
+            }
+            if (fileData == null)
+            {
+                MessageBox.Show("Incompatible/No file selected. Please select a file and ensure its assets.bin!");
+                button1.Enabled = true; //re-enable open file button if user closes it
             }
         }
 
@@ -114,6 +129,16 @@ namespace DiddyKongModdingView
 
                 changeTextureBtn.Visible = true;
                 changePaletteBtn.Visible = true;
+                if (TextureFormat.Text == "256-Color Palette") //only supporting 256 color palette for now
+                {
+                    changeTextureBtn.Enabled = true;
+                    changePaletteBtn.Enabled = true;
+                }
+                else
+                {
+                    changeTextureBtn.Enabled = false;
+                    changePaletteBtn.Enabled = false;
+                }
             }
         }
 
@@ -408,7 +433,17 @@ namespace DiddyKongModdingView
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
                     string path = ofd.FileName;
-                    textureData = TexturePaletteExtractor.texture_Returner(path,trackData,textureIndex);
+                    string extension = Path.GetExtension(path);
+
+                    if (extension == ".bin")   //then it is most likely raw texture data
+                        textureData = TexturePaletteExtractor.texture_Returner(path, trackData, textureIndex);
+                    else
+                    {
+                        //else it is a .jpg or .png
+                        bool success = TextureEncoder.encodeImage(path, trackData, textureIndex);
+                        if (success)
+                            textureData = TexturePaletteExtractor.texture_Returner("texture.bin", trackData, textureIndex);
+                    }
                 }
             }
             if (textureData == null || textureData.Length == 0)
@@ -436,7 +471,17 @@ namespace DiddyKongModdingView
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
                     string path = ofd.FileName;
-                    paletteData = TexturePaletteExtractor.palette_Returner(path,trackData,paletteUID);
+                    string extension = Path.GetExtension(path);
+
+                    if (extension == ".bin")   //then it is most likely raw texture data
+                        paletteData = TexturePaletteExtractor.palette_Returner(path, trackData, paletteUID);
+                    else
+                    {
+                        //else it is a .jpg or .png
+                        bool success = TextureEncoder.encodeImage(path, trackData, textureIndex);
+                        if (success)
+                            paletteData = TexturePaletteExtractor.palette_Returner("palette.bin", trackData, paletteUID);
+                    }
                 }
             }
             if (paletteData == null || paletteData.Length == 0)
@@ -461,6 +506,15 @@ namespace DiddyKongModdingView
             byte[] newData = Assets.recompressAsset(trackData, assetIndex, assetType, compType);
             byte[] modifiedData = Assets.replaceAssetData(fileData, assetIndex, assetType, compType, newData);
             fileData = modifiedData; // Update the fileData with the modified data
+            saveAssetsBinBtn.Enabled = true;
+        }
+
+        private void saveAssetsBinBtn_Click(object sender, EventArgs e)
+        {
+            string outputFile = $"assets_modded.bin";
+            File.WriteAllBytes(outputFile, fileData);
+            MessageBox.Show($"Modded file saved as {outputFile}");
+            saveAssetsBinBtn.Enabled = false;
         }
     }
 }
