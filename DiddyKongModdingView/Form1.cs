@@ -129,10 +129,15 @@ namespace DiddyKongModdingView
 
                 changeTextureBtn.Visible = true;
                 changePaletteBtn.Visible = true;
-                if (TextureFormat.Text == "256-Color Palette" || TextureFormat.Text == "16-Color Palette") //only supporting 256 color palette for now
+                if (TextureFormat.Text == "256-Color Palette" || TextureFormat.Text == "16-Color Palette")
                 {
                     changeTextureBtn.Enabled = true;
                     changePaletteBtn.Enabled = true;
+                }
+                else if (TextureFormat.Text == "A3I5")  //partial
+                {
+                    changeTextureBtn.Enabled = true;
+                    changePaletteBtn.Enabled = false;
                 }
                 else
                 {
