@@ -197,7 +197,7 @@ namespace DiddyKongModdingView
             }
 
             //return data;
-            if (textureFormat == "4 Bit Indexed")
+            if (textureFormat == "16-Color Palette")
                 return Detile4Bit(data, width, height);
             else if (textureFormat == "Direct Color (RGB5551)")
                 return DetileDirectColor(data, width, height);

@@ -68,29 +68,8 @@ namespace DiddyKongModdingView
             File.WriteAllBytes(path, data);
         }
 
-        public static bool encodeImage(string inputFile, byte[] trackData, int textureIndex)
+        private static bool encode_256_color(Bitmap bmp, int paletteCount, int width, int height)
         {
-            int paletteCount;
-            string textureFormat = Textures.getTextureFormat(trackData, textureIndex);
-            int offset = Textures.getTextureOffset(trackData, textureIndex);
-            int size = BitConverter.ToInt16(trackData, offset + 14) * 0x10;
-            int width = BitConverter.ToInt16(trackData, offset + 16);
-            int height = BitConverter.ToInt16(trackData, offset + 18);
-
-            if (inputFile == null)
-                throw new Exception("There are no params");
-
-            Bitmap bmp = new Bitmap(Image.FromFile(inputFile), new Size(width, height));
-
-            if (textureFormat == "4 Bit Indexed")
-                paletteCount = 16;
-            else if (textureFormat == "Direct Color (RGB5551)")
-                return ConvertToRGB5551(bmp);
-            else if (textureFormat == "256-Color Palette")
-                paletteCount = 256;
-            else
-                paletteCount = 256; //just set it to 256 color palette
-
             try
             {
                 // Quantize with Octree (matches and replaces PIL)
@@ -175,6 +154,129 @@ namespace DiddyKongModdingView
                 MessageBox.Show("Error trying to encode texture.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
+        }
+
+        private static bool encode_16_color(Bitmap bmp, int paletteCount,int width,int height)
+        {
+            try
+            {
+                // Quantize with Octree (matches and replaces PIL)
+                OctreeQuantizer quantizer = new OctreeQuantizer();
+                for (int y = 0; y < bmp.Height; y++)
+                    for (int x = 0; x < bmp.Width; x++)
+                        quantizer.AddColor(bmp.GetPixel(x, y));
+
+                List<Color> palette = quantizer.GeneratePalette(paletteCount);
+
+                // Fill missing entries
+                while (palette.Count < paletteCount)
+                    palette.Add(Color.Black);
+
+                // Build Palette Binary File
+                using (BinaryWriter bw = new BinaryWriter(File.Open("palette.bin", FileMode.Create)))
+                {
+                    foreach (var c in palette)
+                    {
+                        ushort rgb555 = RGB888toRGB555(c);
+                        bw.Write(rgb555);
+                    }
+                }
+
+                // Build indexed texture
+                byte[] linear = new byte[(width * height + 1) / 2]; // each byte stores 2 pixels
+
+
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++)
+                    {
+                        Color c = bmp.GetPixel(x, y);
+
+                        int best = 0;
+                        int bestDist = int.MaxValue;
+
+                        for (int i = 0; i < paletteCount; i++)
+                        {
+                            int dr = c.R - palette[i].R;
+                            int dg = c.G - palette[i].G;
+                            int db = c.B - palette[i].B;
+                            int dist = dr * dr + dg * dg + db * db;
+
+                            if (dist < bestDist)
+                            {
+                                bestDist = dist;
+                                best = i;
+                            }
+                        }
+
+                        int idx = (y * width + x) / 2;
+                        if ((x & 1) == 0)
+                            linear[idx] = (byte)(best << 4); // high nibble
+                        else
+                            linear[idx] |= (byte)(best & 0x0F); // low nibble
+                    }
+                }
+
+
+                // tile texture 8x8 for ds
+                byte[] tiled = new byte[linear.Length];
+                int index = 0;
+
+                for (int ty = 0; ty < height; ty += 8)
+                {
+                    for (int tx = 0; tx < width; tx += 8)
+                    {
+                        for (int y = 0; y < 8; y++)
+                        {
+                            for (int x = 0; x < 8; x += 2)
+                            {
+                                int sx = tx + x;
+                                int sy = ty + y;
+
+                                int linearIndex1 = (sy * width + sx) / 2;
+                                int linearIndex2 = (sy * width + sx + 1) / 2;
+
+                                byte b1 = linear[linearIndex1];
+                                byte b2 = linear[linearIndex2];
+
+                                // Combine the two nibbles
+                                byte combined = (byte)((b1 & 0xF0) | ((b2 & 0xF0) >> 4));
+                                tiled[index++] = combined;
+                            }
+                        }
+                    }
+                }
+                File.WriteAllBytes("texture.bin", tiled);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error trying to encode texture.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        public static bool encodeImage(string inputFile, byte[] trackData, int textureIndex)
+        {
+            int paletteCount;
+            string textureFormat = Textures.getTextureFormat(trackData, textureIndex);
+            int offset = Textures.getTextureOffset(trackData, textureIndex);
+            int size = BitConverter.ToInt16(trackData, offset + 14) * 0x10;
+            int width = BitConverter.ToInt16(trackData, offset + 16);
+            int height = BitConverter.ToInt16(trackData, offset + 18);
+
+            if (inputFile == null)
+                throw new Exception("There are no params");
+
+            Bitmap bmp = new Bitmap(Image.FromFile(inputFile), new Size(width, height));
+
+            if (textureFormat == "16-Color Palette")
+                return encode_16_color(bmp, 16, width, height);
+            else if (textureFormat == "Direct Color (RGB5551)")
+                return ConvertToRGB5551(bmp);
+            else if (textureFormat == "256-Color Palette")
+                return encode_256_color(bmp, 256, width, height);
+            else return false;
         }
     }
 
