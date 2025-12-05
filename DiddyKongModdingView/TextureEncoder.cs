@@ -315,6 +315,64 @@ namespace DiddyKongModdingView
             }
         }
 
+        private static byte encodeA5I3(Color c)
+        {
+            // Convert alpha (0-255) to 5 bits
+            int alpha5 = (c.A * 31 / 255) & 0x1F;
+
+            // Convert intensity (grayscale) to 3 bits
+            int intensity3 = (c.R * 7 / 255) & 0x07; // assuming R=G=B
+
+            return (byte)((alpha5 << 3) | intensity3);
+        }
+
+        private static bool encode_A5I3(Bitmap bmp, int paletteCount, int width, int height)
+        {
+            try
+            {
+                OctreeQuantizer quantizer = new OctreeQuantizer();
+                for (int y = 0; y < bmp.Height; y++)
+                    for (int x = 0; x < bmp.Width; x++)
+                        quantizer.AddColor(bmp.GetPixel(x, y));
+
+                List<Color> palette = quantizer.GeneratePalette(paletteCount);
+
+                // Fill missing entries
+                while (palette.Count < paletteCount)
+                    palette.Add(Color.Black);
+
+                // Build Palette Binary File
+                using (BinaryWriter bw = new BinaryWriter(File.Open("palette.bin", FileMode.Create)))
+                {
+                    foreach (var c in palette)
+                    {
+                        ushort rgb555 = RGB888toRGB555(c);
+                        bw.Write(rgb555);
+                    }
+                }
+
+                byte[] result = new byte[width * height];
+                int index = 0;
+
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++)
+                    {
+                        Color c = bmp.GetPixel(x, y);
+                        result[index++] = encodeA5I3(c);
+                    }
+                }
+
+                File.WriteAllBytes("texture.bin", result);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error trying to encode A3I5 texture.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
         public static bool encodeImage(string inputFile, byte[] trackData, int textureIndex)
         {
             int paletteCount;
@@ -337,6 +395,8 @@ namespace DiddyKongModdingView
                 return encode_256_color(bmp, 256, width, height);
             else if (textureFormat == "A3I5")
                 return encode_A3I5(bmp, 16, width, height);
+            else if (textureFormat == "A5I3")
+                return encode_A5I3(bmp, 16, width, height);
             else return false;
         }
     }
