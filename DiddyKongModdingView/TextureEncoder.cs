@@ -20,44 +20,64 @@ namespace DiddyKongModdingView
             );
         }
 
-        private static bool ConvertToRGB5551(Bitmap bmp)
+        static ushort RGB888toRGB5551(Color c)
+        {
+            int r = c.R >> 3;       // 8-bit → 5-bit
+            int g = c.G >> 3;
+            int b = c.B >> 3;
+            int a = c.A > 127 ? 1 : 0; // simple threshold alpha
+            return (ushort)((a << 15) | (r << 10) | (g << 5) | b);
+        }
+
+
+        private static bool encode_direct_color(Bitmap bmp,int width, int height)
         {
             try
             {
-                int width = bmp.Width;
-                int height = bmp.Height;
-
-                byte[] output = new byte[width * height * 2]; // 2 bytes per pixel
-                int pos = 0;
-
+                // Build linear RGB5551 array
+                ushort[] linear = new ushort[width * height];
                 for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
                     {
                         Color c = bmp.GetPixel(x, y);
-
-                        int r = c.R >> 3; // 5 bits
-                        int g = c.G >> 3; // 5 bits
-                        int b = c.B >> 3; // 5 bits
-
-                        int a = (c.A > 127) ? 1 : 0; // 1-bit alpha
-
-                        ushort rgb5551 =
-                            (ushort)((r) |
-                            (g << 5) |
-                            (b << 10) |
-                            (a << 15));
-
-                        output[pos++] = (byte)(rgb5551 & 0xFF);
-                        output[pos++] = (byte)((rgb5551 >> 8) & 0xFF);
+                        linear[y * width + x] = RGB888toRGB5551(c);
                     }
                 }
-                File.WriteAllBytes("texture.bin", output);
+
+                // Tile the texture
+                int tilesX = width / 8;
+                int tilesY = height / 8;
+                byte[] tiled = new byte[linear.Length * 2]; // 2 bytes per pixel
+                int dstIndex = 0;
+
+                for (int ty = 0; ty < tilesY; ty++)
+                {
+                    for (int tx = 0; tx < tilesX; tx++)
+                    {
+                        for (int row = 0; row < 8; row++)
+                        {
+                            int srcY = ty * 8 + row;
+
+                            for (int col = 0; col < 8; col++)
+                            {
+                                int srcX = tx * 8 + col;
+                                int linearIndex = srcY * width + srcX;
+                                ushort pixel = linear[linearIndex];
+                                tiled[dstIndex++] = (byte)(pixel & 0xFF);       // low byte
+                                tiled[dstIndex++] = (byte)((pixel >> 8) & 0xFF); // high byte
+                            }
+                        }
+                    }
+                }
+
+                // Write to file
+                File.WriteAllBytes("texture.bin", tiled);
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                MessageBox.Show("Error trying to encode texture.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error encoding direct color texture." + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
@@ -390,7 +410,7 @@ namespace DiddyKongModdingView
             if (textureFormat == "16-Color Palette")
                 return encode_16_color(bmp, 16, width, height);
             else if (textureFormat == "Direct Color (RGB5551)")
-                return ConvertToRGB5551(bmp);
+                return encode_direct_color(bmp,width,height);
             else if (textureFormat == "256-Color Palette")
                 return encode_256_color(bmp, 256, width, height);
             else if (textureFormat == "A3I5")

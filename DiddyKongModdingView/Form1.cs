@@ -134,7 +134,7 @@ namespace DiddyKongModdingView
                     changeTextureBtn.Enabled = true;
                     changePaletteBtn.Enabled = true;
                 }
-                else if (TextureFormat.Text == "A3I5" || TextureFormat.Text == "A5I3")  //partial
+                else if (TextureFormat.Text == "A3I5" || TextureFormat.Text == "A5I3" || TextureFormat.Text == "Direct Color (RGB5551)")  //partial
                 {
                     changeTextureBtn.Enabled = true;
                     changePaletteBtn.Enabled = false;
