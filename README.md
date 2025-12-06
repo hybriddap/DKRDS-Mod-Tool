@@ -3,6 +3,8 @@ Diddy Kong Racing DS Mod Tool
 
 An open-source modding tool for **Diddy Kong Racing DS**.
 
+<img src="https://i.imgur.com/fUlmYJ9.png" alt="Alt text" width="500">
+
 Currently, it supports:
 - Viewing basic asset data
 - Viewing basic track data & track textures
@@ -10,6 +12,8 @@ Currently, it supports:
 - Viewing basic texture data & textures
 - Decompression of Model Files
 - Exporting textures as png files
+- Changing Textures & their Palettes
+- Exporting modded assets.bin file for use
 
 I will implement further functionality throughout development.
 
@@ -42,7 +46,7 @@ This is a **Windows Forms (.NET)** application. To build it:
   bin\Debug\net8.0-windows\
 
 ## Credits
-Major credits to <a href="https://www.youtube.com/@AtlasOmegaAlpha">Atlas</a> for his extensive research and documentation on this game. This project would not be possible without him.
+Major credits to <a href="https://www.youtube.com/@AtlasOmegaAlpha">Atlas</a> for his extensive research and <a href="https://wiki.wexosmk.xyz/index.php/Assets.bin_(File_Format)">documentation</a> on this game. This project would not be possible without him.
 
 ## License
 
